@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 215 100% 12%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --accent: 43 96% 56%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 215 100% 12%;
+    --radius: 0.5rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .bg-primary {
+    background-color: #131921 !important;
+  }
+
+  .text-primary {
+    color: #131921 !important;
+  }
+
+  .from-primary {
+    --tw-gradient-from: #131921 !important;
+  }
+
+  .to-primary {
+    --tw-gradient-to: #131921 !important;
+  }
+
+  .border-primary {
+    border-color: #131921 !important;
+  }
+
+  .bg-accent {
+    background-color: #febd69 !important;
+  }
+
+  .text-accent {
+    color: #febd69 !important;
+  }
+
+  .from-accent {
+    --tw-gradient-from: #febd69 !important;
+  }
+
+  .to-accent {
+    --tw-gradient-to: #febd69 !important;
+  }
+
+  .hover\:bg-orange-500:hover {
+    background-color: #f3a847 !important;
+  }
+
+  .text-primary-foreground {
+    color: #ffffff !important;
+  }
+
+  .text-accent-foreground {
+    color: #131921 !important;
+  }
+
+  .bg-gradient-to-r.from-primary {
+    background: linear-gradient(to right, #131921, #1e3a5f) !important;
+  }
+
+  .bg-gradient-to-br.from-primary {
+    background: linear-gradient(to bottom right, #131921, #1e3a5f) !important;
+  }
+
+  .bg-gradient-to-b.from-accent {
+    background: linear-gradient(to bottom, #febd69, #f3a847) !important;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
