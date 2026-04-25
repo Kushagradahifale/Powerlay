@@ -412,10 +412,30 @@ export default function Home() {
             </Link>
 
             <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-              <a href="#how-it-works" className="text-[#64748B] hover:text-[#7C3AED] transition-colors duration-200">How It Works</a>
-              <a href="#materials" className="text-[#64748B] hover:text-[#7C3AED] transition-colors duration-200">Materials</a>
-              <Link href="/dashboard" className="text-[#64748B] hover:text-[#7C3AED] transition-colors duration-200">Dashboard</Link>
-              <Link href="/orders" className="text-[#64748B] hover:text-[#7C3AED] transition-colors duration-200">Orders</Link>
+              {[
+                { label: "How It Works", href: "#how-it-works" },
+                { label: "Materials", href: "#materials" },
+                { label: "Dashboard", href: "/dashboard" },
+                { label: "Orders", href: "/orders" },
+              ].map((item) =>
+                item.href.startsWith("#") ? (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="relative text-[#64748B] hover:text-[#0F172A] transition-colors duration-300 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:rounded-full after:bg-gradient-to-r after:from-[#7C3AED] after:to-[#2563EB] after:transition-all after:duration-300 hover:after:w-full"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="relative text-[#64748B] hover:text-[#0F172A] transition-colors duration-300 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:rounded-full after:bg-gradient-to-r after:from-[#7C3AED] after:to-[#2563EB] after:transition-all after:duration-300 hover:after:w-full"
+                  >
+                    {item.label}
+                  </Link>
+                )
+              )}
             </div>
 
             <div className="flex items-center gap-3">
