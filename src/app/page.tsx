@@ -397,9 +397,9 @@ export default function Home() {
     <div className={`w-full ${inter.className}`}>
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      <nav className="sticky top-4 z-50 mx-4 rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-14">
             <Link href="/" className="flex items-center gap-2 group">
               <img
                 src="/logo-icon.png"
@@ -446,7 +446,7 @@ export default function Home() {
                 href="/upload"
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_4px_14px_rgba(124,58,237,0.4)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.6)] hover:-translate-y-0.5 transition-all duration-300"
               >
-                ⬆️ Upload STL
+                ↑ Upload STL
               </Link>
             </div>
           </div>
@@ -463,7 +463,7 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover z-0"
           src="/7035591-uhd_3840_2160_24fps.mp4"
         />
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-white/80 via-white/50 to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-white/90 via-white/60 to-white/10" />
 
         {/* Subtle grid pattern */}
         <div className="absolute inset-0 z-10 opacity-20"
@@ -526,7 +526,7 @@ export default function Home() {
               </motion.div>
 
               <motion.h1
-                className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 text-[#0F172A] tracking-tight drop-shadow-[0_10px_30px_rgba(255,255,255,0.6)]"
+                className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6 text-[#0F172A] tracking-tight drop-shadow-[0_10px_30px_rgba(255,255,255,0.75)]"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
@@ -536,7 +536,7 @@ export default function Home() {
               </motion.h1>
 
               <motion.p
-                className={`text-lg text-[#475569] leading-relaxed mb-8 max-w-xl ${arimo.className}`}
+                className={`text-lg md:text-xl text-[#334155] font-medium leading-relaxed mb-8 max-w-xl ${arimo.className}`}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -554,9 +554,19 @@ export default function Home() {
               >
                 <Link
                   href="/upload"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
+                  className="relative inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white overflow-hidden group bg-gradient-to-r from-[#7C3AED] to-[#2563EB]
+  shadow-[0_12px_35px_rgba(124,58,237,0.35)]
+  hover:shadow-[0_20px_50px_rgba(124,58,237,0.6)]
+  hover:-translate-y-1 hover:scale-[1.02]
+  transition-all duration-300 animate-[pulse_3s_ease-in-out_infinite] "
                 >
-                  ⬆️ Upload Your File
+                  {/* Shine effect */}
+                  <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500
+    bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%]" />
+
+                  <span className="relative z-10 flex items-center gap-2">
+                    ↑ Upload Your File
+                  </span>
                 </Link>
 
                 <a
@@ -1118,7 +1128,7 @@ export default function Home() {
               Upload your STL file now and see your ideas come to life. Get a quote within 24 hours.
             </p>
             <Link href="/upload" className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
-              ⬆️ Upload Now
+              ↑ Upload Now
             </Link>
           </div>
         </ScrollFadeIn>
@@ -1142,8 +1152,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-3xl">📦</span>
-                <img src="/Logo.png" className="h-10 brightness-0 invert" />
+                <img src="logo1.png" className="h-10 brightness-0 invert" />
               </div>
               <p className="text-[#CBD5E1] text-base leading-relaxed mb-4">
                 Premium 3D printing service bringing your ideas to life with precision and speed across India.
