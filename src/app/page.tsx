@@ -3,6 +3,7 @@ import { Grenze, Antonio, Alice, Arimo } from 'next/font/google'
 import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
+
 const grenze = Grenze({
   subsets: ['latin'],
   weight: ['400', '700']
@@ -123,7 +124,6 @@ function PricingCalculator() {
           <span>500g</span>
         </div>
       </div>
-
       {/* Price Breakdown */}
       <div className="bg-gray-50 rounded-xl p-4 space-y-2">
         <div className="flex justify-between text-sm">
@@ -155,6 +155,94 @@ function PricingCalculator() {
       <p className="text-center text-xs text-gray-500">
         * Final price based on actual file analysis
       </p>
+    </div>
+  );
+}
+
+function TestimonialCarousel() {
+  const testimonials = [
+    {
+      name: 'Rahul Sharma',
+      role: 'Mechanical Engineering Student, IIT Delhi',
+      photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop',
+      text: 'Powerlay saved my final year project! The gear mechanism printed perfectly and the quality was outstanding. Delivered in just 2 days.',
+      rating: 5,
+    },
+    {
+      name: 'Priya Patel',
+      role: 'Product Designer, Startup Founder',
+      photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop',
+      text: 'I needed prototypes for investor meetings. Powerlay delivered high-quality prints at an affordable price. The team was super responsive!',
+      rating: 5,
+    },
+    {
+      name: 'Arjun Verma',
+      role: 'Robotics Hobbyist',
+      photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
+      text: 'Printed custom robot parts and miniatures. The detail is incredible! Will definitely use Powerlay for all my future projects.',
+      rating: 5,
+    },
+    {
+      name: 'Sneha Reddy',
+      role: 'Architecture Student, NIT Trichy',
+      photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop',
+      text: 'My architectural model came out beautifully. The pricing was transparent and the quote arrived within 12 hours. Highly recommend!',
+      rating: 5,
+    },
+    {
+      name: 'Vikram Singh',
+      role: 'Electronics Engineer',
+      photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop',
+      text: 'Needed custom enclosures for circuit boards. Powerlay understood my requirements perfectly. Great communication throughout!',
+      rating: 5,
+    },
+  ];
+
+  return (
+    <div className="relative">
+      <div className="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory scrollbar-hide">
+        {testimonials.map((testimonial, idx) => (
+          <ScrollFadeIn key={idx} delay={idx * 0.1}>
+            <div className="flex-shrink-0 w-80 sm:w-96 snap-center">
+              <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow h-full border border-gray-100">
+                {/* Stars */}
+                <div className="flex gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <span key={i} className="text-yellow-400 text-xl">⭐</span>
+                  ))}
+                </div>
+
+                {/* Text */}
+                <p className="text-gray-700 text-lg mb-6 leading-relaxed">
+                  "{testimonial.text}"
+                </p>
+
+                {/* Author */}
+                <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
+                  <img
+                    src={testimonial.photo}
+                    alt={testimonial.name}
+                    className="w-14 h-14 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className="font-bold" style={{ color: '#131921' }}>
+                      {testimonial.name}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {testimonial.role}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ScrollFadeIn>
+        ))}
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="text-center mt-4">
+        <p className="text-sm text-gray-400">← Scroll to see more →</p>
+      </div>
     </div>
   );
 }
@@ -260,6 +348,49 @@ function CategoryTabs() {
   );
 }
 export default function Home() {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const faqs = [
+    {
+      question: "What file formats do you accept?",
+      answer:
+        "We accept STL files. If you have a different format (OBJ, STEP, etc.), please contact us and we'll help convert it.",
+    },
+    {
+      question: "How long does printing take?",
+      answer:
+        "Most orders are completed in 2-3 days after payment. Complex or large prints may take 4-5 days. You'll receive a specific timeline with your quote.",
+    },
+    {
+      question: "What materials do you offer?",
+      answer:
+        "We currently offer PLA (biodegradable, great for prototypes) and PETG (stronger, heat-resistant, ideal for functional parts). Each material has different pricing.",
+    },
+    {
+      question: "How is pricing calculated?",
+      answer:
+        "Pricing is based on material weight, material type (PLA at ₹5/gram, PETG at ₹7/gram), plus 18% GST and ₹60 flat shipping across India.",
+    },
+    {
+      question: "Do you offer bulk discounts?",
+      answer:
+        "Yes! For orders over 10 identical parts, contact us for custom bulk pricing. We're happy to work with students and startups.",
+    },
+    {
+      question: "What if my print fails or has defects?",
+      answer:
+        "Every print is quality-checked before shipping. If there's any defect, we'll reprint it for free. Your satisfaction is guaranteed.",
+    },
+    {
+      question: "Can you help me design my 3D model?",
+      answer:
+        "We're a printing service, not a design agency. However, we can recommend freelance designers or point you to learning resources.",
+    },
+    {
+      question: "Do you ship outside India?",
+      answer:
+        "Currently we only ship within India. International shipping is coming soon!",
+    },
+  ];
   return (
     <div className="w-full">
 
@@ -436,6 +567,62 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stats Grid */}
+      <section className="bg-gray-100 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollFadeIn>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  icon: "🖨️",
+                  title: "2+",
+                  description: "Printers Running",
+                  color: "#febd69",
+                },
+                {
+                  icon: "✅",
+                  title: "10+",
+                  description: "Projects Completed",
+                  color: "#60a5fa",
+                },
+                {
+                  icon: "🚚",
+                  title: "2-3 Day",
+                  description: "Delivery",
+                  color: "#34d399",
+                },
+                {
+                  icon: "🧪",
+                  title: "PLA & PETG",
+                  description: "Materials",
+                  color: "#a78bfa",
+                },
+              ].map((stat, index) => (
+                <ScrollFadeIn key={stat.description} delay={index * 0.1}>
+                  <motion.div
+                    whileHover={{ y: -6 }}
+                    transition={{ duration: 0.25 }}
+                    className="h-full rounded-xl bg-white p-6 text-center shadow-md hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="text-5xl mb-4" style={{ color: stat.color }}>
+                      {stat.icon}
+                    </div>
+
+                    <h3 className="text-3xl font-bold mb-2" style={{ color: "#131921" }}>
+                      {stat.title}
+                    </h3>
+
+                    <p className="text-sm text-gray-600">
+                      {stat.description}
+                    </p>
+                  </motion.div>
+                </ScrollFadeIn>
+              ))}
+            </div>
+          </ScrollFadeIn>
+        </div>
+      </section>
+
       {/* What Can You Print - Tabbed */}
       <section className="bg-gray-950 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -448,39 +635,101 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Reviews */}
-      <section className="py-20" style={{ background: 'linear-gradient(to bottom, #febd69, #f3a847)' }}>
+      {/* Testimonials Carousel */}
+      <section className="bg-gray-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
           <ScrollFadeIn>
-            <h2 className="text-5xl font-bold text-center mb-4" style={{ color: '#131921' }}>Customer Reviews</h2>
-            <p className="text-center text-xl mb-16" style={{ color: '#131921' }}>See what our happy customers are saying</p>
+            <h2 className="text-5xl font-bold text-center mb-4" style={{ color: '#131921' }}>
+              What Our Customers Say
+            </h2>
+            <p className="text-center text-gray-600 text-xl mb-16">
+              Real feedback from engineers, students, and makers
+            </p>
           </ScrollFadeIn>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+
+          <TestimonialCarousel />
+        </div>
+      </section>
+
+      {/* Featured Videos */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollFadeIn>
+            <h2 className="text-5xl font-bold text-center mb-4" style={{ color: "#131921" }}>
+              See Our Prints Come to Life
+            </h2>
+            <p className="text-center text-gray-600 text-xl mb-16">
+              Watch timelapse videos of 3D printing from our workshop
+            </p>
+          </ScrollFadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { name: 'Rahul M', title: 'Engineer', review: 'Amazing quality prints! The precision is exactly what I needed for my mechanical prototypes.', emoji: '👨‍💼' },
-              { name: 'Priya S', title: 'Designer', review: 'Delivered in 2 days, perfect finish! The attention to detail is impressive.', emoji: '👩‍🎨' },
-              { name: 'Arjun K', title: 'Student', review: 'Best 3D printing service in India. Fast, reliable, and very affordable!', emoji: '👨‍🎓' },
-            ].map((review, idx) => (
-              <ScrollFadeIn key={idx} delay={idx * 0.1}>
-                <Card className="p-8 bg-white shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl text-white" style={{ background: '#131921' }}>
-                      {review.emoji}
-                    </div>
-                    <div>
-                      <h4 className="font-bold" style={{ color: '#131921' }}>{review.name}</h4>
-                      <p className="text-sm text-gray-600">{review.title}</p>
+              { title: "PLA Gear Timelapse", videoId: "dQw4w9WgXcQ" },
+              { title: "PETG Prototype", videoId: "ysz5S6PUM-U" },
+              { title: "Miniature Print", videoId: "ScMzIvxBSi4" },
+              { title: "Engineering Part", videoId: "aqz-KE-bpKQ" },
+              { title: "Architecture Model", videoId: "jNQXAC9IVRw" },
+              { title: "Phone Stand", videoId: "M7lc1UVf-VE" },
+            ].map((video, index) => (
+              <ScrollFadeIn key={video.title} delay={index * 0.08}>
+                <motion.a
+                  href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="group block overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={`https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`}
+                      alt={video.title}
+                      className="w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+
+                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
+
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div
+                        className="w-16 h-16 rounded-full flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110"
+                        style={{ backgroundColor: "#febd69" }}
+                      >
+                        <span className="ml-1 text-2xl" style={{ color: "#131921" }}>
+                          ▶
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-1 mb-4">{[...Array(5)].map((_, i) => <span key={i} className="text-xl">⭐</span>)}</div>
-                  <p className="text-gray-700 italic text-lg">"{review.review}"</p>
-                </Card>
+
+                  <div className="p-5">
+                    <h3 className="text-xl font-bold" style={{ color: "#131921" }}>
+                      {video.title}
+                    </h3>
+                    <p className="text-gray-500 mt-2">
+                      Watch the complete 3D printing process.
+                    </p>
+                  </div>
+                </motion.a>
               </ScrollFadeIn>
             ))}
           </div>
+
+          <div className="mt-14 text-center">
+            <motion.a
+              href="https://www.youtube.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center justify-center rounded-full px-8 py-4 font-semibold text-white shadow-lg transition"
+              style={{ backgroundColor: "#131921" }}
+            >
+              Watch More on YouTube →
+            </motion.a>
+          </div>
         </div>
-      </section >
+      </section>
 
       {/* How It Works - Enhanced */}
       <section id="how-it-works" className="bg-white py-20">
@@ -567,6 +816,65 @@ export default function Home() {
               </ScrollFadeIn>
             ))}
           </div>
+
+          {/* FAQ Section */}
+          <section className="bg-white py-20">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <ScrollFadeIn>
+                <div className="text-center mb-14">
+                  <h2 className="text-5xl font-bold mb-4" style={{ color: "#131921" }}>
+                    Frequently Asked Questions
+                  </h2>
+                  <p className="text-gray-600 text-xl">
+                    Everything you need to know about our 3D printing service
+                  </p>
+                </div>
+              </ScrollFadeIn>
+
+              <div className="rounded-2xl bg-white shadow-lg overflow-hidden">
+                {faqs.map((faq, index) => {
+                  const isOpen = openFaq === index;
+
+                  return (
+                    <div key={faq.question} className="border-b border-gray-200 last:border-b-0">
+                      <button
+                        type="button"
+                        onClick={() => setOpenFaq(isOpen ? null : index)}
+                        className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-gray-50 transition"
+                      >
+                        <span className="text-lg font-semibold" style={{ color: "#131921" }}>
+                          {faq.question}
+                        </span>
+
+                        <motion.span
+                          animate={{ rotate: isOpen ? 180 : 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="text-2xl font-bold shrink-0"
+                          style={{ color: "#febd69" }}
+                        >
+                          {isOpen ? "−" : "+"}
+                        </motion.span>
+                      </button>
+
+                      <motion.div
+                        initial={false}
+                        animate={{
+                          height: isOpen ? "auto" : 0,
+                          opacity: isOpen ? 1 : 0,
+                        }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 pb-6 text-gray-700">
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
 
           {/* CTA */}
           <ScrollFadeIn>
