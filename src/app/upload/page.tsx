@@ -113,13 +113,15 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 p-6">
+    <div className="min-h-screen bg-slate-50 text-slate-900 p-6 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-96 h-96 bg-purple-200/20 rounded-full filter blur-3xl z-0" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-blue-200/20 rounded-full filter blur-3xl z-0" />
 
       {/* MAIN UPLOAD CARD */}
-      <div className="mt-8 flex justify-center">
-        <div className="bg-white border border-gray-200 p-10 rounded-xl text-center w-full max-w-xl shadow-sm">
-          <h1 className="text-2xl font-bold mb-2 text-[#131921]">Upload Your Design</h1>
-          <p className="mb-6 text-base text-gray-500">
+      <div className="mt-8 flex justify-center relative z-10">
+        <div className="glass-card card-shadow border border-slate-200/80 p-10 rounded-3xl text-center w-full max-w-xl">
+          <h1 className="text-3xl font-bold mb-3 text-[#0F172A]">Upload Your Design</h1>
+          <p className="mb-8 text-base text-[#64748B]">
             Upload your STL file to create your product
           </p>
 
@@ -132,10 +134,10 @@ export default function Home() {
                 type="file"
                 accept=".stl"
                 onChange={handleFileChange}
-                className="bg-white border border-gray-300 text-gray-900"
+                className="bg-white/50 border border-slate-300 text-[#0F172A] rounded-xl cursor-pointer file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-[#7C3AED] hover:file:bg-purple-100"
               />
               {file && (
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-[#64748B] mt-2 font-medium">
                   📎 {file.name} — {(file.size / 1048576).toFixed(2)} MB
                 </p>
               )}
@@ -145,12 +147,12 @@ export default function Home() {
             <div>
               <Label className="text-gray-700 mb-2">Material</Label>
               <Select value={material} onValueChange={setMaterial}>
-                <SelectTrigger className="bg-white border border-gray-300 text-gray-900 w-full">
+                <SelectTrigger className="bg-white/50 border border-slate-300 text-[#0F172A] rounded-xl w-full">
                   <SelectValue placeholder="Select Material" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-200">
-                  <SelectItem value="PLA" className="text-gray-900 hover:bg-gray-50">PLA</SelectItem>
-                  <SelectItem value="PETG" className="text-gray-900 hover:bg-gray-50">PETG</SelectItem>
+                <SelectContent className="bg-white border border-slate-200 rounded-xl">
+                  <SelectItem value="PLA" className="text-[#0F172A] hover:bg-slate-50 cursor-pointer">PLA</SelectItem>
+                  <SelectItem value="PETG" className="text-[#0F172A] hover:bg-slate-50 cursor-pointer">PETG</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -164,7 +166,7 @@ export default function Home() {
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
                 placeholder="e.g. White, Black, Red"
-                className="bg-white border border-gray-300 text-gray-900"
+                className="bg-white/50 border border-slate-300 text-[#0F172A] rounded-xl focus:ring-[#7C3AED] focus:border-[#7C3AED]"
               />
             </div>
 
@@ -178,14 +180,14 @@ export default function Home() {
                 max={100}
                 value={quantity}
                 onChange={(e) => setQuantity(Math.max(1, Math.min(100, Number(e.target.value))))}
-                className="bg-white border border-gray-300 text-gray-900"
+                className="bg-white/50 border border-slate-300 text-[#0F172A] rounded-xl focus:ring-[#7C3AED] focus:border-[#7C3AED]"
               />
             </div>
 
             {/* Infill Slider */}
             <div>
               <Label className="text-gray-700 mb-2">Infill: {infill}%</Label>
-              <div className="bg-gray-100 rounded-full p-1 mt-2">
+              <div className="bg-slate-100 rounded-full p-2 mt-2">
                 <Slider
                   min={10}
                   max={100}
@@ -204,7 +206,7 @@ export default function Home() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any special instructions or notes..."
-                className="bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400"
+                className="bg-white/50 border border-slate-300 text-[#0F172A] rounded-xl placeholder:text-slate-400 focus:ring-[#7C3AED] focus:border-[#7C3AED] min-h-[100px]"
               />
             </div>
 
@@ -213,9 +215,15 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="bg-[#febd69] hover:bg-[#f3a847] text-[#131921] font-bold px-8 py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition text-base"
+                className="w-full text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-lg transition-all duration-300 text-lg"
+                style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
               >
-                {uploading ? "Uploading..." : "Upload Now"}
+                {uploading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Uploading...
+                  </span>
+                ) : "Upload Now"}
               </button>
             </div>
           </form>
@@ -223,27 +231,39 @@ export default function Home() {
       </div>
 
       {/* EXAMPLE PRINTS */}
-      <div className="mt-16 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-[#131921]">Example Prints</h2>
+      <div className="mt-20 max-w-4xl mx-auto relative z-10">
+        <h2 className="text-3xl font-bold mb-8 text-center text-[#0F172A]">Example Prints</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
           {["Phone Stand", "Gear", "Miniature", "Mechanical Part", "Enclosure", "Custom Object"].map((item) => (
-            <div key={item} className="border border-gray-200 p-4 rounded-xl bg-white shadow-sm">
-              <div className="h-28 bg-gray-100 mb-3 rounded-lg"></div>
-              <p className="text-[#131921] font-medium text-sm">{item}</p>
+            <div key={item} className="border border-slate-200/60 p-5 rounded-3xl glass-card card-shadow hover:card-shadow-hover transition-all duration-300 group">
+              <div className="h-32 bg-gradient-to-br from-slate-100 to-purple-50 mb-4 rounded-2xl overflow-hidden relative">
+                <div className="absolute inset-0 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-300">
+                  {item === "Phone Stand" && "📱"}
+                  {item === "Gear" && "⚙️"}
+                  {item === "Miniature" && "🎭"}
+                  {item === "Mechanical Part" && "🔧"}
+                  {item === "Enclosure" && "📦"}
+                  {item === "Custom Object" && "✨"}
+                </div>
+              </div>
+              <p className="text-[#0F172A] font-bold text-center">{item}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* HOW IT WORKS */}
-      <div className="mt-16 max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl font-bold mb-6 text-[#131921]">How It Works</h2>
+      <div className="mt-20 max-w-4xl mx-auto mb-20 relative z-10">
+        <h2 className="text-3xl font-bold mb-8 text-center text-[#0F172A]">How It Works</h2>
 
-        <div className="grid md:grid-cols-4 gap-4">
-          {["Upload STL", "Choose Material", "We Print", "We Deliver"].map((step) => (
-            <div key={step} className="border border-gray-200 bg-white p-5 rounded-xl text-center text-[#131921] font-medium shadow-sm">
-              {step}
+        <div className="grid md:grid-cols-4 gap-6">
+          {["Upload STL", "Choose Material", "We Print", "We Deliver"].map((step, idx) => (
+            <div key={step} className="border border-slate-200/60 glass-card p-6 rounded-3xl text-center card-shadow hover:card-shadow-hover transition-all duration-300 relative">
+              <div className="w-8 h-8 rounded-full bg-purple-100 text-[#7C3AED] font-bold flex items-center justify-center mx-auto mb-3 absolute -top-4 left-1/2 -translate-x-1/2 shadow-sm border border-white">
+                {idx + 1}
+              </div>
+              <p className="text-[#0F172A] font-bold mt-2">{step}</p>
             </div>
           ))}
         </div>

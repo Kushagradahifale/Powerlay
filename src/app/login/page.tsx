@@ -59,29 +59,32 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center relative overflow-hidden">
+      <div className="absolute top-10 left-10 w-96 h-96 bg-purple-200/30 rounded-full filter blur-3xl animate-blob z-0" />
+      <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-200/20 rounded-full filter blur-3xl animate-blob animation-delay-2000 z-0" />
+      
+      <div className="w-full max-w-md relative z-10 px-4">
         {/* Logo */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-extrabold text-[#131921] tracking-wide">POWERLAY</h1>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-extrabold text-[#0F172A] tracking-wide">POWERLAY</h1>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">
-            {mode === "login" ? "Sign in to Powerlay" : "Create account"}
+        <div className="glass-card card-shadow border border-slate-200/80 rounded-3xl p-8 w-full max-w-md bg-white/80">
+          <h1 className="text-2xl font-bold text-[#0F172A] mb-6 text-center">
+            {mode === "login" ? "Sign in to Powerlay" : "Create an account"}
           </h1>
 
-          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
             {mode === "signup" && (
               <label className="block">
-                <span className="text-sm font-semibold text-gray-700">Your name</span>
+                <span className="text-sm font-semibold text-[#0F172A]">Your name</span>
                 <input
                   type="text"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#febd69]"
+                  className="mt-1.5 w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-3 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all"
                   placeholder="John Doe"
                   autoComplete="name"
                 />
@@ -89,26 +92,26 @@ export default function LoginPage() {
             )}
 
             <label className="block">
-              <span className="text-sm font-semibold text-gray-700">Email</span>
+              <span className="text-sm font-semibold text-[#0F172A]">Email</span>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#febd69]"
+                className="mt-1.5 w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-3 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all"
                 placeholder="you@company.com"
                 autoComplete="email"
               />
             </label>
 
             <label className="block">
-              <span className="text-sm font-semibold text-gray-700">Password</span>
+              <span className="text-sm font-semibold text-[#0F172A]">Password</span>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#febd69]"
+                className="mt-1.5 w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-3 text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all"
                 placeholder="••••••••"
                 autoComplete={mode === "login" ? "current-password" : "new-password"}
               />
@@ -117,27 +120,29 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#febd69] hover:bg-[#f3a847] text-black font-bold py-3 rounded-lg disabled:opacity-50"
+              className="w-full text-white font-bold py-3.5 rounded-xl shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-70 transition-all duration-300 text-base"
+              style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
             >
-              {loading
-                ? "Please wait…"
-                : mode === "login"
-                  ? "Sign in"
-                  : "Create your account"}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Please wait...
+                </span>
+              ) : mode === "login" ? "Sign in" : "Create your account"}
             </button>
 
             {/* Divider */}
-            <div className="relative flex items-center gap-4 pt-2">
-              <span className="h-px flex-1 bg-gray-200" />
-              <span className="text-xs text-gray-400">or</span>
-              <span className="h-px flex-1 bg-gray-200" />
+            <div className="relative flex items-center gap-4 pt-3 pb-1">
+              <span className="h-px flex-1 bg-slate-200" />
+              <span className="text-xs text-[#64748B] font-medium uppercase tracking-wider">or</span>
+              <span className="h-px flex-1 bg-slate-200" />
             </div>
 
             {/* Google OAuth */}
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 rounded-lg flex items-center justify-center gap-2"
+              className="w-full border border-slate-200 bg-white hover:bg-slate-50 text-[#0F172A] font-semibold py-3.5 rounded-xl flex items-center justify-center gap-3 transition-colors shadow-sm"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path
@@ -160,14 +165,14 @@ export default function LoginPage() {
               Continue with Google
             </button>
 
-            <div className="pt-2 text-center text-sm text-gray-500">
+            <div className="pt-4 text-center text-sm text-[#64748B]">
               {mode === "login" ? (
                 <>
                   New to Powerlay?{" "}
                   <button
                     type="button"
                     onClick={() => setMode("signup")}
-                    className="font-semibold text-[#0066c0] hover:text-[#c45500] hover:underline"
+                    className="font-bold text-[#7C3AED] hover:text-[#6D28D9] transition-colors"
                   >
                     Create account
                   </button>
@@ -178,7 +183,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setMode("login")}
-                    className="font-semibold text-[#0066c0] hover:text-[#c45500] hover:underline"
+                    className="font-bold text-[#7C3AED] hover:text-[#6D28D9] transition-colors"
                   >
                     Sign in
                   </button>

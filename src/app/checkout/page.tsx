@@ -21,7 +21,9 @@ declare global {
   }
 }
 
-export default function CheckoutPage() {
+import { Suspense } from "react";
+
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const uploadId = searchParams.get("upload_id");
@@ -129,7 +131,7 @@ export default function CheckoutPage() {
           email: userEmail,
         },
         theme: {
-          color: "#febd69",
+          color: "#7C3AED",
         },
         handler: async (response: any) => {
           // Insert order
@@ -185,85 +187,99 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#febd69] border-t-transparent" />
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute top-10 left-10 w-64 h-64 bg-purple-200/30 rounded-full filter blur-3xl animate-blob z-0" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-200/20 rounded-full filter blur-3xl animate-blob animation-delay-2000 z-0" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-[#7C3AED] relative z-10" />
       </div>
     );
   }
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-lg p-10 text-center max-w-md">
-          <div className="text-6xl mb-4">✅</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h2>
-          <p className="text-gray-500">Redirecting to your orders...</p>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-blue-50/50 z-0" />
+        <div className="bg-white/90 backdrop-blur rounded-3xl shadow-xl card-shadow p-10 text-center max-w-md border border-slate-200/60 relative z-10">
+          <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
+            <span className="text-4xl">✅</span>
+          </div>
+          <h2 className="text-3xl font-bold text-[#0F172A] mb-3">Payment Successful!</h2>
+          <p className="text-[#64748B] text-lg">Redirecting to your orders...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-lg mx-auto px-4 py-12">
-        {/* Header */}
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Complete Your Payment</h1>
+    <div className="min-h-screen bg-slate-50 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200/20 rounded-full filter blur-3xl z-0" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-200/20 rounded-full filter blur-3xl z-0" />
 
-        {/* Upload Details Card */}
-        <div className="bg-white rounded-xl shadow p-6 mb-6">
-          <h2 className="font-bold text-gray-900 mb-4 text-lg">Order Summary</h2>
+      <div className="max-w-lg mx-auto px-4 py-16 relative z-10">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
+            <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Checkout</span>
+          </div>
+          <h1 className="text-3xl font-bold text-[#0F172A]">Complete Your Payment</h1>
+        </div>
+
+        <div className="glass-card card-shadow rounded-3xl p-8 mb-6 border border-slate-200/80">
+          <h2 className="font-bold text-[#0F172A] mb-5 text-xl flex items-center gap-2">
+            <span>📦</span> Order Summary
+          </h2>
 
           {upload && (
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">File</span>
-                <span className="text-gray-900 font-medium">{upload.file_name}</span>
+            <div className="space-y-4">
+              <div className="flex justify-between text-base border-b border-slate-100 pb-3">
+                <span className="text-[#64748B]">File</span>
+                <span className="text-[#0F172A] font-medium">{upload.file_name}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Material</span>
-                <span className="text-gray-900 font-medium">{upload.material}</span>
+              <div className="flex justify-between text-base border-b border-slate-100 pb-3">
+                <span className="text-[#64748B]">Material</span>
+                <span className="text-[#0F172A] font-medium">{upload.material}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Quantity</span>
-                <span className="text-gray-900 font-medium">{upload.quantity}</span>
+              <div className="flex justify-between text-base border-b border-slate-100 pb-3">
+                <span className="text-[#64748B]">Quantity</span>
+                <span className="text-[#0F172A] font-medium">{upload.quantity}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Infill</span>
-                <span className="text-gray-900 font-medium">{upload.infill_percent}%</span>
+              <div className="flex justify-between text-base border-b border-slate-100 pb-3">
+                <span className="text-[#64748B]">Infill</span>
+                <span className="text-[#0F172A] font-medium">{upload.infill_percent}%</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Quoted Price</span>
-                <span className="text-gray-900 font-bold">₹{baseCost}</span>
+              <div className="flex justify-between text-base pt-1">
+                <span className="text-[#64748B]">Quoted Price</span>
+                <span className="text-[#0F172A] font-bold">₹{baseCost}</span>
               </div>
             </div>
           )}
         </div>
 
         {/* Price Breakdown Card */}
-        <div className="bg-white rounded-xl shadow p-6 mb-6">
-          <h2 className="font-bold text-gray-900 mb-4 text-lg">Price Breakdown</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Print Cost</span>
-              <span className="text-gray-900">₹{baseCost.toFixed(2)}</span>
+        <div className="bg-gradient-to-br from-slate-50 to-purple-50/50 rounded-3xl p-8 mb-8 border border-purple-100 card-shadow">
+          <h2 className="font-bold text-[#0F172A] mb-5 text-xl">Price Breakdown</h2>
+          <div className="space-y-4">
+            <div className="flex justify-between text-base">
+              <span className="text-[#64748B]">Print Cost</span>
+              <span className="text-[#0F172A] font-medium">₹{baseCost.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">GST (18%)</span>
-              <span className="text-gray-900">₹{gst.toFixed(2)}</span>
+            <div className="flex justify-between text-base">
+              <span className="text-[#64748B]">GST (18%)</span>
+              <span className="text-[#0F172A] font-medium">₹{gst.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Shipping</span>
-              <span className="text-gray-900">₹{shipping.toFixed(2)}</span>
+            <div className="flex justify-between text-base">
+              <span className="text-[#64748B]">Shipping</span>
+              <span className="text-[#0F172A] font-medium">₹{shipping.toFixed(2)}</span>
             </div>
-            <div className="border-t border-gray-200 pt-3 flex justify-between">
-              <span className="font-bold text-gray-900 text-lg">Total</span>
-              <span className="font-bold text-gray-900 text-lg">₹{total.toFixed(2)}</span>
+            <div className="border-t border-slate-200 pt-4 mt-2 flex justify-between items-center">
+              <span className="font-bold text-[#0F172A] text-lg">Total</span>
+              <span className="font-bold text-3xl gradient-text">₹{total.toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         {/* Secure Payment Badge */}
-        <div className="flex items-center justify-center gap-2 text-gray-400 text-sm mb-4">
+        <div className="flex items-center justify-center gap-2 text-[#64748B] text-sm mb-6 bg-slate-100/50 py-2 px-4 rounded-full w-fit mx-auto">
           <span>🔒</span>
           <span>Secured by Razorpay</span>
         </div>
@@ -272,20 +288,35 @@ export default function CheckoutPage() {
         <button
           onClick={handlePayment}
           disabled={paying}
-          className="w-full py-4 rounded-xl font-bold text-lg disabled:opacity-50 transition"
-          style={{ background: "#febd69", color: "#131921" }}
+          className="w-full py-4 rounded-2xl font-bold text-lg text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-lg transition-all duration-300"
+          style={{ background: "linear-gradient(135deg, #7C3AED, #2563EB)" }}
         >
-          {paying ? "Processing..." : `Pay Now ₹${total.toFixed(2)}`}
+          {paying ? (
+            <span className="flex items-center justify-center gap-2">
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Processing...
+            </span>
+          ) : (
+            `Pay Now ₹${total.toFixed(2)}`
+          )}
         </button>
 
         {/* Back Link */}
         <button
           onClick={() => router.push("/dashboard")}
-          className="w-full text-center text-gray-500 text-sm mt-4 hover:text-gray-700"
+          className="w-full text-center text-[#64748B] font-medium text-sm mt-6 hover:text-[#7C3AED] transition-colors"
         >
           ← Back to Dashboard
         </button>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-[#7C3AED]" /></div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
