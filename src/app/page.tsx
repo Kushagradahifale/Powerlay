@@ -665,8 +665,8 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: "PLA Gear Timelapse", videoId: "dQw4w9WgXcQ" },
-              { title: "PETG Prototype", videoId: "ysz5S6PUM-U" },
+              { title: "PLA Agitator", videoId: "dQw4w9WgXcQ" },
+              { title: "PETG Agitator Tank", videoId: "ysz5S6PUM-U" },
               { title: "Miniature Print", videoId: "ScMzIvxBSi4" },
               { title: "Engineering Part", videoId: "aqz-KE-bpKQ" },
               { title: "Architecture Model", videoId: "jNQXAC9IVRw" },
