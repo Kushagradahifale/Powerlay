@@ -150,8 +150,7 @@ function PricingCalculator() {
       {/* CTA */}
       <Link
         href="/upload"
-        className="block w-full text-center py-4 font-bold rounded-2xl text-white text-lg shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 hover:-translate-y-0.5 transition-all duration-300"
-        style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
+        className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
       >
         Get Exact Quote →
       </Link>
@@ -207,7 +206,7 @@ function TestimonialCarousel() {
         {testimonials.map((testimonial, idx) => (
           <ScrollFadeIn key={idx} delay={idx * 0.1}>
             <div className="flex-shrink-0 w-80 sm:w-96 snap-center">
-              <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-shadow hover:card-shadow-hover hover:-translate-y-1 transition-all duration-300 h-full border border-slate-200/80">
+              <div className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-8 h-full">
                 {/* Quote mark */}
                 <div className="gradient-text text-4xl font-serif mb-3">“</div>
 
@@ -342,8 +341,7 @@ function CategoryTabs() {
         <div className="text-center mt-12">
           <p className="text-gray-400 mb-6">Don't see your category? We print almost anything!</p>
           <Link href="/upload"
-            className="inline-flex items-center gap-2 px-8 py-4 font-bold rounded-2xl text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-            style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}>
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
             Upload Your Design →
           </Link>
         </div>
@@ -399,11 +397,11 @@ export default function Home() {
     <div className={`w-full ${inter.className}`}>
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-2">
-              <img src="/Logo.png" alt="Powerlay" className="h-8 w-auto" />
+              <img src="/Mogo.png" alt="Powerlay" className="h-8 w-auto" />
             </Link>
 
             <div className="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -419,8 +417,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/upload"
-                className="inline-flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl text-sm text-white shadow-md shadow-purple-200 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-                style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_4px_14px_rgba(124,58,237,0.4)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.6)] hover:-translate-y-0.5 transition-all duration-300"
               >
                 ⬆️ Upload STL
               </Link>
@@ -440,6 +437,46 @@ export default function Home() {
           src="/7035591-uhd_3840_2160_24fps.mp4"
         />
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-white/80 via-white/50 to-transparent" />
+
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 z-10 opacity-20"
+          style={{
+            backgroundImage: `
+      linear-gradient(to right, #7C3AED20 1px, transparent 1px),
+      linear-gradient(to bottom, #7C3AED20 1px, transparent 1px)
+    `,
+            backgroundSize: '40px 40px'
+          }}
+        />
+        {/* Soft glowing orb */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-purple-400/20 rounded-full blur-[120px] animate-pulse z-10" />
+
+        {/* Premium floating glow particles */}
+        <div className="absolute inset-0 z-10 pointer-events-none">
+          {[
+            { top: "15%", left: "20%", size: 120 },
+            { top: "30%", left: "70%", size: 90 },
+            { top: "55%", left: "40%", size: 140 },
+            { top: "75%", left: "80%", size: 100 },
+            { top: "65%", left: "15%", size: 130 },
+          ].map((p, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full animate-[float_10s_ease-in-out_infinite]"
+              style={{
+                top: p.top,
+                left: p.left,
+                width: `${p.size}px`,
+                height: `${p.size}px`,
+                background:
+                  i % 2 === 0
+                    ? "radial-gradient(circle, rgba(124,58,237,0.5), transparent 70%)"
+                    : "radial-gradient(circle, rgba(37,99,235,0.5), transparent 70%)",
+                filter: "blur(40px)",
+              }}
+            />
+          ))}
+        </div>
 
         {/* Animated gradient blobs */}
         {/* Premium gradient blobs */}
@@ -490,15 +527,14 @@ export default function Home() {
               >
                 <Link
                   href="/upload"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 hover:-translate-y-1 transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
                 >
                   ⬆️ Upload Your File
                 </Link>
 
                 <a
                   href="#how-it-works"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl border-2 border-slate-200 text-[#0F172A] hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-purple-50/50 transition-all duration-300"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl border border-slate-200 text-[#0F172A] hover:border-[#7C3AED] hover:text-[#7C3AED] hover:-translate-y-1 transition-all duration-300"
                 >
                   Learn More →
                 </a>
@@ -537,8 +573,7 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <Link href="/upload" className="block w-full text-center py-3 font-bold rounded-xl text-sm text-white shadow-md shadow-purple-200 hover:shadow-lg transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}>
+                <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
                   Start Your Order →
                 </Link>
               </div>
@@ -548,7 +583,7 @@ export default function Home() {
       </section>
 
       {/* Logo Marquee Strip */}
-      <section className="py-8 overflow-hidden border-b border-[#E2E8F0] bg-[#F8FAFC]">
+      <section className="py-8 overflow-hidden border-t border-[#E2E8F0] bg-slate-100">
         <div className="flex animate-marquee whitespace-nowrap">
           {[
             "IIT Delhi", "NIT Trichy", "VIT Vellore", "BITS Pilani", "Delhi University",
@@ -569,13 +604,12 @@ export default function Home() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[['Razerpay', 'Secure payement', '💳'], [' 1-2 Days', 'Day Turnaround', '⚡'], ['PLA, PETG', 'Premium Materials', '🧪'], ['100%', 'Quality Checked', '✅']].map(([num, label, icon], i) => (
               <ScrollFadeIn key={label} delay={i * 0.1}>
-                <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}
-                  className="text-center p-6 rounded-3xl bg-white/80 backdrop-blur border border-slate-200/60 card-shadow hover:card-shadow-hover transition-all duration-300">
+                <div className="text-center p-6 bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <div className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center text-xl"
                     style={{ background: 'linear-gradient(135deg, #F3E8FF, #EDE9FE)' }}>{icon}</div>
                   <div className="text-2xl font-bold mb-1 gradient-text">{num}</div>
                   <p className="text-[#64748B] text-sm">{label}</p>
-                </motion.div>
+                </div>
               </ScrollFadeIn>
             ))}
           </div>
@@ -589,7 +623,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
               <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Pricing</span>
             </div>
-            <h2 className="text-4xl font-bold text-[#0F172A]">Quick Price Estimate</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Quick Price Estimate</h2>
           </div>
         </ScrollFadeIn>
         <motion.div
@@ -611,7 +645,7 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                 <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Portfolio</span>
               </div>
-              <h2 className="text-4xl font-bold text-[#0F172A]">Gallery of Our Prints</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Gallery of Our Prints</h2>
             </div>
           </ScrollFadeIn>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -626,7 +660,7 @@ export default function Home() {
               { src: 'Machines.jpg', alt: '3D printing Machines', tag: 'Machines' },
             ].map((item, idx) => (
               <ScrollFadeIn key={idx} delay={idx * 0.05}>
-                <div className="rounded-3xl overflow-hidden card-shadow hover:card-shadow-hover transition-all duration-300 aspect-square group relative">
+                <div className="aspect-square group relative overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <img
                     src={item.src}
                     alt={item.alt}
@@ -659,7 +693,7 @@ export default function Home() {
                   <motion.div
                     whileHover={{ y: -6 }}
                     transition={{ duration: 0.25 }}
-                    className="h-full rounded-3xl bg-white/90 backdrop-blur border border-slate-200/60 p-6 text-center card-shadow hover:card-shadow-hover transition-all duration-300"
+                    className="h-full text-center p-6 bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                   >
                     <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl"
                       style={{ background: `${stat.color}15` }}>
@@ -683,8 +717,8 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                 <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Categories</span>
               </div>
-              <h2 className="text-4xl font-bold text-[#0F172A] mb-3">What Can You Print?</h2>
-              <p className="text-[#64748B] text-lg">From prototypes to decorative items, we print almost anything</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">What Can You Print?</h2>
+              <p className="text-[#64748B] text-lg leading-relaxed">From prototypes to decorative items, we print almost anything</p>
             </div>
           </ScrollFadeIn>
 
@@ -701,8 +735,8 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                 <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Testimonials</span>
               </div>
-              <h2 className="text-4xl font-bold text-[#0F172A] mb-3">What Our Customers Say</h2>
-              <p className="text-[#64748B] text-lg">Real feedback from engineers, students, and makers</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">What Our Customers Say</h2>
+              <p className="text-[#64748B] text-lg leading-relaxed">Real feedback from engineers, students, and makers</p>
             </div>
           </ScrollFadeIn>
 
@@ -718,8 +752,8 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                 <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Videos</span>
               </div>
-              <h2 className="text-4xl font-bold text-[#0F172A] mb-3">See Our Prints Come to Life</h2>
-              <p className="text-[#64748B] text-lg">Watch timelapse videos of 3D printing from our workshop</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">See Our Prints Come to Life</h2>
+              <p className="text-[#64748B] text-lg leading-relaxed">Watch timelapse videos of 3D printing from our workshop</p>
             </div>
           </ScrollFadeIn>
 
@@ -739,7 +773,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   whileHover={{ y: -8 }}
                   transition={{ duration: 0.25 }}
-                  className="group block overflow-hidden rounded-3xl bg-white/90 backdrop-blur border border-slate-200/60 card-shadow hover:card-shadow-hover transition-all duration-300"
+                  className="group block overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="relative overflow-hidden">
                     <img
@@ -777,17 +811,14 @@ export default function Home() {
           </div>
 
           <div className="mt-14 text-center">
-            <motion.a
+            <a
               href="https://www.youtube.com/"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center rounded-full px-8 py-4 font-semibold text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-              style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
             >
               Watch More on YouTube →
-            </motion.a>
+            </a>
           </div>
         </div>
       </section>
@@ -801,8 +832,8 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                 <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Process</span>
               </div>
-              <h2 className="text-4xl font-bold text-[#0F172A] mb-3">How It Works</h2>
-              <p className="text-[#64748B] text-lg">Four simple steps from design to delivery</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">How It Works</h2>
+              <p className="text-[#64748B] text-lg leading-relaxed">Four simple steps from design to delivery</p>
             </div>
           </ScrollFadeIn>
 
@@ -845,7 +876,7 @@ export default function Home() {
                 <div className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-center`}>
                   {/* Image */}
                   <div className="lg:w-1/2">
-                    <div className="relative rounded-3xl overflow-hidden card-shadow h-80 group">
+                    <div className="relative h-80 group overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                       <img
                         src={step.img}
                         alt={step.title}
@@ -892,12 +923,12 @@ export default function Home() {
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                     <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">FAQ</span>
                   </div>
-                  <h2 className="text-4xl font-bold mb-3 text-[#0F172A]">Frequently Asked Questions</h2>
-                  <p className="text-[#64748B] text-lg">Everything you need to know about our 3D printing service</p>
+                  <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">Frequently Asked Questions</h2>
+                  <p className="text-[#64748B] text-lg leading-relaxed">Everything you need to know about our 3D printing service</p>
                 </div>
               </ScrollFadeIn>
 
-              <div className="rounded-3xl bg-white border border-slate-200/60 card-shadow overflow-hidden">
+              <div className="overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 {faqs.map((faq, index) => {
                   const isOpen = openFaq === index;
 
@@ -947,8 +978,7 @@ export default function Home() {
             <div className="text-center mt-16">
               <Link
                 href="/upload"
-                className="inline-flex items-center gap-2 px-10 py-5 text-xl font-bold rounded-2xl text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-                style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
               >
                 Start Your Order Now →
               </Link>
@@ -958,19 +988,19 @@ export default function Home() {
       </section>
 
       {/* Materials */}
-      < section id="materials" className="bg-white py-20" >
+      <section id="materials" className="bg-white py-20" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollFadeIn>
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                 <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Materials</span>
               </div>
-              <h2 className="text-4xl font-bold text-[#0F172A]">Choose Your Material</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Choose Your Material</h2>
             </div>
           </ScrollFadeIn>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <ScrollFadeIn>
-              <Card className="border border-slate-200/60 overflow-hidden h-full rounded-3xl card-shadow hover:card-shadow-hover transition-all duration-300">
+              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div className="text-white p-8" style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
                   <h3 className="text-3xl font-bold mb-2">🌱 PLA Standard</h3>
                   <div className="text-4xl font-bold mb-1">From ₹5<span className="text-lg">/gram</span></div>
@@ -985,14 +1015,14 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/upload" className="block w-full text-center py-4 text-lg font-bold rounded-xl border-2 border-[#7C3AED] text-[#7C3AED] hover:bg-[#F3E8FF] transition-colors">
+                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl border border-slate-200 hover:border-[#7C3AED] hover:text-[#7C3AED] hover:-translate-y-1 transition-all duration-300">
                     Order PLA Print
                   </Link>
                 </div>
               </Card>
             </ScrollFadeIn>
             <ScrollFadeIn delay={0.1}>
-              <Card className="border border-slate-200/60 overflow-hidden h-full rounded-3xl card-shadow hover:card-shadow-hover transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
+              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
                 <div className="p-8 relative" style={{ background: 'linear-gradient(135deg, #7C3AED, #A78BFA)' }}>
                   <div className="absolute top-4 right-4 text-[#7C3AED] bg-white px-3 py-1 rounded-full text-sm font-bold">POPULAR</div>
                   <h3 className="text-3xl font-bold mb-2 text-white">⚙️ PETG Engineering Grade</h3>
@@ -1008,7 +1038,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/upload" className="block w-full text-center py-4 text-lg font-bold rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white transition-colors">
+                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
                     Order PETG Print
                   </Link>
                 </div>
@@ -1016,10 +1046,10 @@ export default function Home() {
             </ScrollFadeIn>
           </div>
         </div>
-      </section >
+      </section>
 
       {/* Why Choose Us */}
-      < section className="bg-slate-50 py-20 relative overflow-hidden" >
+      <section className="bg-slate-50 py-20 relative overflow-hidden" >
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-100/15 rounded-full filter blur-3xl" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <ScrollFadeIn>
@@ -1027,7 +1057,7 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
                 <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Why Us</span>
               </div>
-              <h2 className="text-4xl font-bold text-[#0F172A]">Why Choose Powerlay?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Why Choose Powerlay?</h2>
             </div>
           </ScrollFadeIn>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
@@ -1038,7 +1068,7 @@ export default function Home() {
             ].map((item, idx) => (
               <ScrollFadeIn key={idx} delay={idx * 0.1}>
                 <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }}>
-                  <Card className="border border-slate-200/60 bg-white/90 backdrop-blur rounded-3xl card-shadow hover:card-shadow-hover transition-all duration-300 p-8 text-center h-full">
+                  <Card className="text-center h-full p-8 bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                     <div className="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center text-3xl" style={{ background: 'linear-gradient(135deg, #F3E8FF, #EDE9FE)' }}>{item.emoji}</div>
                     <h3 className="text-xl font-bold mb-3 text-[#0F172A]">{item.title}</h3>
                     <p className="text-[#64748B] text-base leading-relaxed">{item.description}</p>
@@ -1048,28 +1078,27 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section >
+      </section>
 
       {/* CTA */}
-      < section className="py-20 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #F3E8FF 0%, #EDE9FE 30%, #E0E7FF 70%, #F3E8FF 100%)' }}>
+      <section className="py-20 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #F3E8FF 0%, #EDE9FE 30%, #E0E7FF 70%, #F3E8FF 100%)' }}>
         <div className="absolute top-10 left-10 w-64 h-64 bg-purple-300/20 rounded-full filter blur-3xl" />
         <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-300/15 rounded-full filter blur-3xl" />
         <ScrollFadeIn>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-[#0F172A]">Ready to Print Your Design?</h2>
-            <p className="text-lg mb-10 max-w-2xl mx-auto text-[#475569]">
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-[#0F172A]">Ready to Print Your Design?</h2>
+            <p className="text-lg leading-relaxed mb-10 max-w-2xl mx-auto text-[#475569]">
               Upload your STL file now and see your ideas come to life. Get a quote within 24 hours.
             </p>
-            <Link href="/upload" className="inline-flex items-center gap-2 px-12 py-5 text-xl font-bold rounded-2xl text-white shadow-lg shadow-purple-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}>
+            <Link href="/upload" className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
               ⬆️ Upload Now
             </Link>
           </div>
         </ScrollFadeIn>
-      </section >
+      </section>
 
       {/* WhatsApp */}
-      < motion.a href="https://wa.me/918462831438" target="_blank" rel="noopener noreferrer"
+      <motion.a href="https://wa.me/918462831438" target="_blank" rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-40 p-4 rounded-full shadow-lg"
         style={{ background: '#25D366' }}
         whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
@@ -1077,10 +1106,10 @@ export default function Home() {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="white">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
         </svg>
-      </motion.a >
+      </motion.a>
 
       {/* Footer */}
-      < footer className="text-white py-20 footer-glow relative overflow-hidden">
+      <footer className="text-white py-20 footer-glow relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-purple-500/5 rounded-full filter blur-3xl" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
@@ -1170,7 +1199,7 @@ export default function Home() {
             <p>© 2024 Powerlay. All rights reserved.</p>
           </div>
         </div>
-      </footer >
+      </footer>
 
     </div >
   );
