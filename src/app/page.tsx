@@ -78,24 +78,22 @@ function PricingCalculator() {
           <button
             onClick={() => setMaterial('PLA')}
             className={`p-5 rounded-2xl border-2 font-bold transition-all duration-300 ${material === 'PLA'
-              ? 'border-[#7C3AED] shadow-lg shadow-purple-100 scale-[1.02]'
-              : 'border-slate-200 hover:border-purple-200 hover:shadow-md'
+              ? 'border-[#7C3AED] shadow-[0_10px_30px_rgba(124,58,237,0.15)] scale-[1.02] bg-purple-50 text-[#0F172A]'
+              : 'border-slate-200 text-[#64748B] hover:border-[#7C3AED] hover:text-[#7C3AED] hover:shadow-md hover:bg-purple-50'
               }`}
-            style={material === 'PLA' ? { background: 'linear-gradient(135deg, #F3E8FF, #EDE9FE)', color: '#0F172A' } : {}}
           >
             🌱 PLA Standard
-            <div className="text-xs font-normal mt-1 text-[#64748B]">₹5/gram</div>
+            <div className={`text-xs font-normal mt-1 ${material === 'PLA' ? 'text-[#0F172A]' : 'text-[#64748B]'}`}>₹5/gram</div>
           </button>
           <button
             onClick={() => setMaterial('PETG')}
             className={`p-5 rounded-2xl border-2 font-bold transition-all duration-300 ${material === 'PETG'
-              ? 'border-[#7C3AED] shadow-lg shadow-purple-100 scale-[1.02]'
-              : 'border-slate-200 hover:border-purple-200 hover:shadow-md'
+              ? 'border-[#7C3AED] shadow-[0_10px_30px_rgba(124,58,237,0.15)] scale-[1.02] bg-purple-50 text-[#0F172A]'
+              : 'border-slate-200 text-[#64748B] hover:border-[#7C3AED] hover:text-[#7C3AED] hover:shadow-md hover:bg-purple-50'
               }`}
-            style={material === 'PETG' ? { background: 'linear-gradient(135deg, #F3E8FF, #EDE9FE)', color: '#0F172A' } : {}}
           >
             ⚙️ PETG Engineering
-            <div className="text-xs font-normal mt-1 text-[#64748B]">₹7/gram</div>
+            <div className={`text-xs font-normal mt-1 ${material === 'PETG' ? 'text-[#0F172A]' : 'text-[#64748B]'}`}>₹7/gram</div>
           </button>
         </div>
       </div>
@@ -292,10 +290,9 @@ function CategoryTabs() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-6 py-4 rounded-2xl font-bold transition-all duration-300 ${activeTab === tab.id
-              ? 'shadow-lg shadow-purple-200 scale-105 text-white'
-              : 'bg-white/80 backdrop-blur border border-slate-200 hover:border-purple-200 hover:shadow-md text-[#0F172A]'
+              ? 'bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] scale-105 text-white'
+              : 'bg-white/50 backdrop-blur-xl border border-slate-200 text-[#64748B] hover:text-[#0F172A] hover:border-[#7C3AED] hover:-translate-y-1 hover:shadow-md hover:bg-white'
               }`}
-            style={activeTab === tab.id ? { background: 'linear-gradient(135deg, #7C3AED, #2563EB)' } : {}}
           >
             <div className="text-lg">{tab.label}</div>
             <div className="text-xs font-normal opacity-80">{tab.desc}</div>
@@ -316,21 +313,19 @@ function CategoryTabs() {
             <img
               src={item.img}
               alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-all duration-500" />
-            <div className="absolute bottom-0 left-0 right-0 h-1 transition-all duration-500 group-hover:h-2"
-              style={{ background: item.color }} />
-            <div className="absolute inset-0 flex flex-col justify-end p-6">
-              <h3 className="text-white font-bold text-xl mb-1">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-[#0F172A]/40 to-transparent opacity-80 group-hover:opacity-100 transition-all duration-500" />
+            <div className="absolute inset-0 flex flex-col justify-end p-6 z-10">
+              <h3 className="text-white font-bold text-2xl mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                 {item.title}
               </h3>
-              <p className="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p className="text-slate-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
                 {item.desc}
               </p>
             </div>
-            <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold text-black"
-              style={{ background: item.color }}>
+            <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold text-white shadow-md border border-white/20 backdrop-blur-md z-10"
+              style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.9), rgba(37,99,235,0.9))' }}>
               3D Print
             </div>
           </motion.div>
@@ -351,6 +346,13 @@ function CategoryTabs() {
 }
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const faqs = [
     {
       question: "What file formats do you accept?",
@@ -397,9 +399,14 @@ export default function Home() {
     <div className={`w-full ${inter.className}`}>
 
       {/* Navbar */}
-      <nav className="sticky top-4 z-50 mx-4 rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+      <nav
+        className={`sticky top-4 z-50 mx-4 rounded-2xl transition-all duration-500 ${scrolled
+          ? "bg-white/90 backdrop-blur-2xl border border-white/50 shadow-[0_10px_40px_rgba(0,0,0,0.08)]"
+          : "bg-white/45 backdrop-blur-xl border border-white/30 shadow-none"
+          }`}
+      >
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-14">
+          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-12" : "h-14"}`}>
             <Link href="/" className="flex items-center gap-2 group">
               <img
                 src="/logo-icon.png"
@@ -701,10 +708,10 @@ export default function Home() {
                   <img
                     src={item.src}
                     alt={item.alt}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-semibold text-[#0F172A] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <div className="absolute bottom-4 left-4 px-4 py-1.5 rounded-full bg-white backdrop-blur-md text-xs font-bold text-[#0F172A] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow-[0_4px_14px_rgba(0,0,0,0.1)] border border-white/50">
                     {item.tag}
                   </div>
                 </div>
@@ -816,29 +823,28 @@ export default function Home() {
                     <img
                       src={`https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`}
                       alt={video.title}
-                      className="w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-all duration-500" />
 
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-500" />
 
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div
-                        className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110"
-                        style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
+                        className="w-14 h-14 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(124,58,237,0.4)] transition-transform duration-300 group-hover:scale-110 group-hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] bg-gradient-to-r from-[#7C3AED] to-[#2563EB]"
                       >
-                        <span className="ml-1 text-2xl" style={{ color: "#FFFFFF" }}>
+                        <span className="ml-1 text-xl text-white">
                           ▶
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-5">
-                    <h3 className="text-xl font-bold" style={{ color: "#0F172A" }}>
+                  <div className="p-5 bg-white">
+                    <h3 className="text-xl font-bold text-[#0F172A] group-hover:text-[#7C3AED] transition-colors duration-300">
                       {video.title}
                     </h3>
-                    <p className="text-gray-500 mt-2">
+                    <p className="text-[#64748B] mt-2">
                       Watch the complete 3D printing process.
                     </p>
                   </div>
@@ -854,7 +860,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
             >
-              Watch More on YouTube →
+              Watch More →
             </a>
           </div>
         </div>
@@ -965,26 +971,25 @@ export default function Home() {
                 </div>
               </ScrollFadeIn>
 
-              <div className="overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="space-y-4">
                 {faqs.map((faq, index) => {
                   const isOpen = openFaq === index;
 
                   return (
-                    <div key={faq.question} className="border-b border-slate-100 last:border-b-0">
+                    <div key={faq.question} className={`bg-white border transition-all duration-300 rounded-2xl overflow-hidden ${isOpen ? 'border-[#7C3AED] shadow-md' : 'border-[#E2E8F0] shadow-sm hover:border-purple-200 hover:shadow-md'}`}>
                       <button
                         type="button"
                         onClick={() => setOpenFaq(isOpen ? null : index)}
-                        className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors duration-200"
+                        className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors duration-200"
                       >
-                        <span className="text-lg font-semibold" style={{ color: "#0F172A" }}>
+                        <span className="text-lg font-semibold text-[#0F172A]">
                           {faq.question}
                         </span>
 
                         <motion.span
                           animate={{ rotate: isOpen ? 180 : 0 }}
                           transition={{ duration: 0.25 }}
-                          className="text-2xl font-bold shrink-0"
-                          style={{ color: "#7C3AED" }}
+                          className="text-2xl font-bold shrink-0 text-[#7C3AED] flex items-center justify-center w-8 h-8 rounded-full bg-purple-50"
                         >
                           {isOpen ? "−" : "+"}
                         </motion.span>
@@ -999,7 +1004,7 @@ export default function Home() {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 pb-6 text-[#1E293B]">
+                        <div className="px-6 pb-6 text-[#64748B] leading-relaxed">
                           {faq.answer}
                         </div>
                       </motion.div>
@@ -1037,9 +1042,9 @@ export default function Home() {
           </ScrollFadeIn>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <ScrollFadeIn>
-              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
                 <div className="text-white p-8" style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
-                  <h3 className="text-3xl font-bold mb-2">🌱 PLA Standard</h3>
+                  <h3 className="text-3xl font-bold mb-2">PLA Standard </h3>
                   <div className="text-4xl font-bold mb-1">From ₹5<span className="text-lg">/gram</span></div>
                   <p className="text-purple-200">Perfect for prototypes & decorative items</p>
                 </div>
@@ -1052,7 +1057,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl border border-slate-200 hover:border-[#7C3AED] hover:text-[#7C3AED] hover:-translate-y-1 transition-all duration-300">
+                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
                     Order PLA Print
                   </Link>
                 </div>
@@ -1062,7 +1067,7 @@ export default function Home() {
               <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
                 <div className="p-8 relative" style={{ background: 'linear-gradient(135deg, #7C3AED, #A78BFA)' }}>
                   <div className="absolute top-4 right-4 text-[#7C3AED] bg-white px-3 py-1 rounded-full text-sm font-bold">POPULAR</div>
-                  <h3 className="text-3xl font-bold mb-2 text-white">⚙️ PETG Engineering Grade</h3>
+                  <h3 className="text-3xl font-bold mb-2 text-white">PETG Engineering Grade </h3>
                   <div className="text-4xl font-bold mb-1 text-white">From ₹7<span className="text-lg">/gram</span></div>
                   <p className="text-purple-200">Professional-grade engineering parts</p>
                 </div>
@@ -1146,93 +1151,95 @@ export default function Home() {
       </motion.a>
 
       {/* Footer */}
-      <footer className="text-white py-20 footer-glow relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-purple-500/5 rounded-full filter blur-3xl" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <img src="logo1.png" className="h-10 brightness-0 invert" />
+      <footer className="bg-[#0F172A] text-white py-20 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#7C3AED]/10 rounded-full filter blur-3xl pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <img src="/logo-icon.png" alt="Powerlay Logo" className="h-10 w-auto brightness-0 invert opacity-90" />
+                <span className="font-bold text-xl tracking-tight text-white">POWERLAY</span>
               </div>
-              <p className="text-[#CBD5E1] text-base leading-relaxed mb-4">
+              <p className="text-[#94A3B8] text-base leading-relaxed">
                 Premium 3D printing service bringing your ideas to life with precision and speed across India.
               </p>
-              <p className="font-semibold" style={{ color: '#A78BFA' }}>Made with 💚 in India</p>
+              <p className="font-medium text-[#A855F7] flex items-center gap-2">
+                <span>Made with</span>
+                <span className="animate-pulse">💚</span>
+                <span>in India</span>
+              </p>
             </div>
+
             <div>
-              <h4 className="font-bold text-lg mb-4" style={{ color: '#A78BFA' }}>Quick Links</h4>
-              <ul className="space-y-2">
+              <h4 className="font-bold text-lg mb-6 text-white tracking-wide">Quick Links</h4>
+              <ul className="space-y-4">
                 {[['Home', '/'], ['Dashboard', '/dashboard'], ['Upload', '/upload'], ['Orders', '/orders']].map(([label, href]) => (
                   <li key={label}>
-                    <Link href={href} className="text-[#CBD5E1] hover:text-[#A78BFA] transition-colors text-base">{label}</Link>
+                    <Link href={href} className="text-[#94A3B8] hover:text-[#A855F7] hover:translate-x-1 transition-all duration-300 inline-block text-base">
+                      {label}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
+
             <div>
-              <h4 className="font-bold text-lg mb-4" style={{ color: '#A78BFA' }}>Support</h4>
-              <ul className="space-y-2">
+              <h4 className="font-bold text-lg mb-6 text-white tracking-wide">Support</h4>
+              <ul className="space-y-4">
                 {['Contact Us', 'FAQ', 'How It Works', 'Pricing'].map((link) => (
-                  <li key={link}><Link href="#" className="text-[#CBD5E1] hover:text-[#A78BFA] transition-colors text-base">{link}</Link></li>
+                  <li key={link}>
+                    <Link href="#" className="text-[#94A3B8] hover:text-[#A855F7] hover:translate-x-1 transition-all duration-300 inline-block text-base">
+                      {link}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             </div>
+
             <div>
-              <h4 className="font-bold text-lg mb-4" style={{ color: '#A78BFA' }}>Get in Touch</h4>
-              <ul className="space-y-3 text-[#CBD5E1] text-base">
-
+              <h4 className="font-bold text-lg mb-6 text-white tracking-wide">Get in Touch</h4>
+              <ul className="space-y-4 text-[#94A3B8] text-base">
                 <li>
-                  <a
-                    href="mailto:Powerlayofficial@gmail.com"
-                    className="flex items-center gap-2 hover:text-[#A78BFA] transition"
-                  >
-                    <MdEmail className="text-[#A78BFA] text-lg" />
-                    Powerlayofficial@gmail.com
+                  <a href="mailto:Powerlayofficial@gmail.com" className="flex items-center gap-3 hover:text-[#A855F7] transition-all duration-300 group">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-[#A855F7]/20 transition-colors">
+                      <MdEmail className="text-[#A855F7] text-lg" />
+                    </div>
+                    <span>Powerlayofficial@gmail.com</span>
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.instagram.com/powerlay2025"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-[#A78BFA] transition"
-                  >
-                    <FaInstagram className="text-pink-400 text-lg" />
-                    Instagram: @powerlay2025
+                  <a href="https://www.instagram.com/powerlay2025" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-[#A855F7] transition-all duration-300 group">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-pink-500/20 transition-colors">
+                      <FaInstagram className="text-pink-400 text-lg" />
+                    </div>
+                    <span>@powerlay2025</span>
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://t.me/Power_Lay"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-[#A78BFA] transition"
-                  >
-                    <FaTelegramPlane className="text-blue-400 text-lg" />
-                    Telegram: @Power_Lay
+                  <a href="https://t.me/Power_Lay" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-[#A855F7] transition-all duration-300 group">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                      <FaTelegramPlane className="text-blue-400 text-lg" />
+                    </div>
+                    <span>@Power_Lay</span>
                   </a>
                 </li>
-
                 <li>
-                  <a
-                    href="https://wa.me/918462831438"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-[#A78BFA] transition"
-                  >
-                    <FaWhatsapp className="text-green-400 text-lg" />
-                    WhatsApp: +91 8462831438
+                  <a href="https://wa.me/918462831438" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-[#A855F7] transition-all duration-300 group">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+                      <FaWhatsapp className="text-green-400 text-lg" />
+                    </div>
+                    <span>+91 8462831438</span>
                   </a>
                 </li>
-                <li className="flex items-center gap-2">
-                  ⏰ Available 24/7
-                </li>
-
               </ul>
             </div>
           </div>
-          <div className="border-t border-slate-700 pt-8 text-center text-slate-400">
-            <p>© 2024 Powerlay. All rights reserved.</p>
+
+          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between text-slate-500 gap-4">
+            <p>© {new Date().getFullYear()} Powerlay. All rights reserved.</p>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Available 24/7
+            </div>
           </div>
         </div>
       </footer>
