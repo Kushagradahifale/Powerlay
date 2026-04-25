@@ -439,13 +439,14 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover z-0"
           src="/7035591-uhd_3840_2160_24fps.mp4"
         />
-
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/85 via-white/75 to-purple-50/70" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-white/80 via-white/50 to-transparent" />
 
         {/* Animated gradient blobs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/30 rounded-full filter blur-3xl animate-blob z-10" />
-        <div className="absolute top-40 right-20 w-96 h-96 bg-blue-200/20 rounded-full filter blur-3xl animate-blob animation-delay-2000 z-10" />
-        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-purple-300/20 rounded-full filter blur-3xl animate-blob animation-delay-4000 z-10" />
+        {/* Premium gradient blobs */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute w-[600px] h-[600px] bg-purple-400/20 rounded-full blur-[120px] top-[-150px] left-[-150px]" />
+          <div className="absolute w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[120px] bottom-[-120px] right-[-120px]" />
+        </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -461,7 +462,7 @@ export default function Home() {
               </motion.div>
 
               <motion.h1
-                className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 text-[#0F172A] tracking-tight"
+                className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 text-[#0F172A] tracking-tight drop-shadow-[0_10px_30px_rgba(255,255,255,0.6)]"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
