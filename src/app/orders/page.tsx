@@ -3,6 +3,145 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import {
+  Package,
+  Printer,
+  Truck,
+  CheckCircle2,
+  Clock,
+  Home,
+  LayoutDashboard,
+  Upload,
+  ListOrdered,
+} from "lucide-react";
+
+const STEP_ORDER = ["confirmed", "printing", "shipped", "delivered"] as const;
+
+const STEP_META: Record<
+  string,
+  { label: string; icon: React.ElementType; color: string; bg: string }
+> = {
+  confirmed: {
+    label: "Confirmed",
+    icon: CheckCircle2,
+    color: "text-blue-600",
+    bg: "bg-blue-100",
+  },
+  printing: {
+    label: "Printing",
+    icon: Printer,
+    color: "text-violet-600",
+    bg: "bg-violet-100",
+  },
+  shipped: {
+    label: "Shipped",
+    icon: Truck,
+    color: "text-orange-600",
+    bg: "bg-orange-100",
+  },
+  delivered: {
+    label: "Delivered",
+    icon: Package,
+    color: "text-emerald-600",
+    bg: "bg-emerald-100",
+  },
+};
+
+function statusEmoji(status: string) {
+  switch (status) {
+    case "pending":
+      return "🟡";
+    case "confirmed":
+      return "🔵";
+    case "printing":
+      return "🟣";
+    case "shipped":
+      return "🟠";
+    case "delivered":
+      return "🟢";
+    case "cancelled":
+      return "🔴";
+    default:
+      return "⚪";
+  }
+}
+
+function statusBadgeClass(status: string) {
+  switch (status) {
+    case "pending":
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case "confirmed":
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    case "printing":
+      return "bg-violet-100 text-violet-800 border-violet-200";
+    case "shipped":
+      return "bg-orange-100 text-orange-800 border-orange-200";
+    case "delivered":
+      return "bg-emerald-100 text-emerald-800 border-emerald-200";
+    case "cancelled":
+      return "bg-red-100 text-red-800 border-red-200";
+    default:
+      return "bg-slate-100 text-slate-800 border-slate-200";
+  }
+}
+
+function ProgressStepper({ currentStatus }: { currentStatus: string }) {
+  const currentIdx = STEP_ORDER.indexOf(currentStatus as any);
+  // Don't render stepper for pending or cancelled
+  if (currentStatus === "pending" || currentStatus === "cancelled") return null;
+
+  return (
+    <div className="mt-6 pt-5 border-t border-slate-100">
+      <div className="flex items-center justify-between gap-1">
+        {STEP_ORDER.map((step, i) => {
+          const meta = STEP_META[step];
+          const Icon = meta.icon;
+          const isCompleted = i <= currentIdx;
+          const isCurrent = i === currentIdx;
+
+          return (
+            <div key={step} className="flex items-center flex-1 last:flex-none">
+              {/* Step circle */}
+              <div className="flex flex-col items-center gap-1.5 min-w-[60px]">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    isCompleted
+                      ? isCurrent
+                        ? `${meta.bg} ring-2 ring-offset-2 ring-current ${meta.color} shadow-md`
+                        : `${meta.bg} ${meta.color}`
+                      : "bg-slate-100 text-slate-400"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span
+                  className={`text-[11px] font-semibold text-center leading-tight ${
+                    isCompleted ? "text-[#0F172A]" : "text-slate-400"
+                  }`}
+                >
+                  {meta.label}
+                </span>
+              </div>
+
+              {/* Connector line */}
+              {i < STEP_ORDER.length - 1 && (
+                <div className="flex-1 mx-1 mt-[-18px]">
+                  <div
+                    className={`h-1 rounded-full transition-all duration-500 ${
+                      i < currentIdx
+                        ? "bg-gradient-to-r from-violet-500 to-blue-500"
+                        : "bg-slate-200"
+                    }`}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -25,77 +164,141 @@ export default function OrdersPage() {
   }, []);
 
   if (loading) return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 relative overflow-hidden">
-      <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-200/30 rounded-full filter blur-3xl animate-blob" />
-      <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-[#7C3AED] relative z-10" />
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200/20 rounded-full filter blur-3xl z-0" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-200/20 rounded-full filter blur-3xl z-0" />
-      
-      <div className="max-w-5xl mx-auto px-4 py-12 relative z-10">
-        <h1 className="text-3xl font-bold text-[#0F172A] mb-8">Your Orders</h1>
+    <div className="min-h-screen bg-slate-50 relative overflow-x-hidden font-sans pb-24 text-[#1E293B]">
+      {/* BACKGROUND EFFECTS */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-500/10 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none z-0" />
 
-        <div className="flex flex-wrap gap-4 mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 font-semibold rounded-2xl text-sm border-2 border-slate-200 text-[#0F172A] hover:border-slate-300 hover:bg-slate-50 transition-all duration-300"
-          >
-            🏠 Home
+      {/* FLOATING NAVBAR */}
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50">
+        <div className="bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="p-2 rounded-xl bg-white/60 backdrop-blur-xl border border-slate-200 shadow-sm transition-all duration-300 group-hover:shadow-[0_8px_25px_rgba(124,58,237,0.25)] group-hover:scale-105">
+              <img
+                src="/logo-icon.png"
+                alt="Powerlay"
+                className="h-6 md:h-7 w-auto object-contain"
+              />
+            </div>
+            <span className="font-bold text-xl tracking-tight text-[#0F172A] group-hover:text-[#7C3AED] transition-colors duration-300">
+              POWERLAY
+            </span>
           </Link>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3 font-semibold rounded-2xl text-sm border-2 border-slate-200 text-[#0F172A] hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-purple-50/50 transition-all duration-300"
-          >
-            ← Dashboard
-          </Link>
-          <Link
-            href="/upload"
-            className="inline-flex items-center gap-2 px-6 py-3 font-bold rounded-2xl text-sm text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-            style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
-          >
-            ⬆️ Upload New File
-          </Link>
+
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
+              <Home className="w-4 h-4" /> Home
+            </Link>
+            <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
+              <LayoutDashboard className="w-4 h-4" /> Dashboard
+            </Link>
+            <Link href="/upload" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
+              <Upload className="w-4 h-4" /> Upload
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2 bg-slate-100 text-slate-900 text-sm font-semibold px-4 py-2 rounded-xl">
+            <ListOrdered className="w-4 h-4" />
+            <span className="hidden sm:inline">Orders</span>
+          </div>
         </div>
+      </nav>
+
+      {/* MAIN CONTENT */}
+      <div className="relative z-10 pt-32 px-6 max-w-5xl mx-auto">
+        {/* HEADER */}
+        <div className="mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-4 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+            <span className="text-xs font-semibold text-blue-800 tracking-wide uppercase">
+              Order Tracking
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[#0F172A] mb-3 tracking-tight">
+            Your Orders
+          </h1>
+          <p className="text-slate-500 text-lg max-w-xl">
+            Track your 3D prints in real time — from confirmation to delivery.
+          </p>
+        </div>
+
+        {/* ORDERS LIST */}
         {orders.length === 0 ? (
-          <div className="glass-card card-shadow border border-slate-200/60 rounded-3xl p-16 text-center">
-            <p className="text-[#0F172A] text-xl font-bold mb-3">No orders yet</p>
-            <p className="text-[#64748B] text-base mb-8">Orders will appear here after you make a payment</p>
-            <a href="/upload" 
-               className="inline-flex items-center text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-               style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}>
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200 shadow-sm p-16 text-center">
+            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-5">
+              <Package className="w-10 h-10 text-slate-400" />
+            </div>
+            <h3 className="text-xl font-bold text-[#0F172A] mb-2">No orders yet</h3>
+            <p className="text-slate-500 mb-8 max-w-md mx-auto">
+              Orders will appear here once you complete a payment for a quoted upload.
+            </p>
+            <Link
+              href="/upload"
+              className="inline-flex items-center gap-2 text-white font-bold px-8 py-3.5 rounded-2xl shadow-lg shadow-violet-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-r from-violet-600 to-blue-600"
+            >
+              <Upload className="w-5 h-5" />
               Upload Your First File
-            </a>
+            </Link>
           </div>
         ) : (
-          <div className="space-y-4">
-            {orders.map((order) => (
-              <div key={order.id} className="glass-card card-shadow border border-slate-200/60 rounded-2xl p-6 hover:card-shadow-hover transition-all duration-300">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-bold text-[#0F172A] text-lg">Order #{order.id.slice(0, 8).toUpperCase()}</p>
-                    <p className="text-[#64748B] text-sm mt-1">
-                      {new Date(order.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
-                    </p>
+          <div className="space-y-6">
+            {orders.map((order) => {
+              const formattedDate = new Date(order.created_at).toLocaleDateString(
+                "en-IN",
+                { day: "2-digit", month: "short", year: "numeric" }
+              );
+
+              return (
+                <div
+                  key={order.id}
+                  className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200 shadow-sm p-6 lg:p-8 hover:shadow-md transition-shadow duration-300"
+                >
+                  {/* Top Row */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div>
+                      <h3 className="font-bold text-[#0F172A] text-xl mb-1">
+                        Order #{order.id.slice(0, 8).toUpperCase()}
+                      </h3>
+                      <div className="flex items-center gap-3 text-sm text-slate-500">
+                        <span className="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-medium">
+                          <Clock className="w-4 h-4" />
+                          {formattedDate}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${statusBadgeClass(order.status)}`}
+                      >
+                        {statusEmoji(order.status)} {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      </span>
+                      <span className="text-2xl font-extrabold text-[#0F172A]">
+                        ₹{order.total_amount}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-[#0F172A] text-xl mb-2">₹{order.total_amount}</p>
-                    <span className={`text-xs px-3 py-1 rounded-md font-semibold ${order.status === "delivered" ? "bg-green-100 text-green-800 border border-green-300" :
-                      order.status === "shipped" ? "bg-blue-100 text-blue-800 border border-blue-300" :
-                        order.status === "printing" ? "bg-purple-100 text-purple-800 border border-purple-300" :
-                          order.status === "confirmed" ? "bg-indigo-100 text-indigo-800 border border-indigo-300" :
-                            "bg-yellow-100 text-yellow-800 border border-yellow-300"
-                      }`}>{order.status}</span>
-                  </div>
+
+                  {/* Tracking Number */}
+                  {order.tracking_number && (
+                    <div className="mt-4 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 flex items-center gap-2">
+                      <Truck className="w-4 h-4 text-slate-500" />
+                      <span className="text-sm text-slate-500">Tracking:</span>
+                      <span className="text-sm font-bold text-[#0F172A]">{order.tracking_number}</span>
+                    </div>
+                  )}
+
+                  {/* Progress Stepper */}
+                  <ProgressStepper currentStatus={order.status} />
                 </div>
-                {order.tracking_number && (
-                  <p className="text-sm text-[#64748B] mt-4 pt-3 border-t border-slate-100">Tracking: <span className="font-medium text-[#0F172A]">{order.tracking_number}</span></p>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -36,10 +36,8 @@ function CheckoutContent() {
   const [paying, setPaying] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const baseCost = amountParam ? parseFloat(amountParam) : 0;
-  const gst = Math.round(baseCost * 0.18 * 100) / 100;
-  const shipping = 60;
-  const total = Math.round((baseCost + gst + shipping) * 100) / 100;
+  const quotedAmount = amountParam ? parseFloat(amountParam) : 0;
+  const total = Math.round(quotedAmount * 100) / 100;
 
   useEffect(() => {
     const init = async () => {
@@ -249,7 +247,7 @@ function CheckoutContent() {
               </div>
               <div className="flex justify-between text-base pt-1">
                 <span className="text-[#64748B]">Quoted Price</span>
-                <span className="text-[#0F172A] font-bold">₹{baseCost}</span>
+                <span className="text-[#0F172A] font-bold">₹{quotedAmount}</span>
               </div>
             </div>
           )}
@@ -260,16 +258,8 @@ function CheckoutContent() {
           <h2 className="font-bold text-[#0F172A] mb-5 text-xl">Price Breakdown</h2>
           <div className="space-y-4">
             <div className="flex justify-between text-base">
-              <span className="text-[#64748B]">Print Cost</span>
-              <span className="text-[#0F172A] font-medium">₹{baseCost.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-base">
-              <span className="text-[#64748B]">GST (18%)</span>
-              <span className="text-[#0F172A] font-medium">₹{gst.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-base">
-              <span className="text-[#64748B]">Shipping</span>
-              <span className="text-[#0F172A] font-medium">₹{shipping.toFixed(2)}</span>
+              <span className="text-[#64748B]">Final Quoted Amount</span>
+              <span className="text-[#0F172A] font-medium">₹{quotedAmount.toFixed(2)}</span>
             </div>
             <div className="border-t border-slate-200 pt-4 mt-2 flex justify-between items-center">
               <span className="font-bold text-[#0F172A] text-lg">Total</span>
