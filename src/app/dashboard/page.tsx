@@ -33,6 +33,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let interval: NodeJS.Timeout;
+
     const init = async () => {
       const {
         data: { user },
@@ -45,25 +47,35 @@ export default function DashboardPage() {
 
       setUserEmail(user.email ?? "");
 
-      const { data: uploads } = await supabase
-        .from("uploads")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+      const fetchData = async () => {
+        const { data: uploads } = await supabase
+          .from("uploads")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
 
-      setUploads(uploads ?? []);
+        setUploads(uploads ?? []);
 
-      const { data: orders } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+        const { data: orders } = await supabase
+          .from("orders")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
 
-      setOrders(orders ?? []);
+        setOrders(orders ?? []);
+      };
+
+      await fetchData();
       setLoading(false);
+
+      interval = setInterval(fetchData, 5000);
     };
 
     init();
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [router]);
 
   const handleLogout = async () => {
@@ -254,14 +266,20 @@ export default function DashboardPage() {
                       </button>
                     )}
 
-                    {upload.status === "rejected" && (
+                  </div>
+
+                  {upload.status === "rejected" && (
+                    <div className="w-full mt-4 bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <p className="text-red-800 text-sm font-medium">
+                        This file could not be quoted. Please upload a corrected file.
+                      </p>
                       <Link href="/upload">
-                        <button className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl px-6 py-2 text-sm font-semibold transition-colors">
+                        <button className="bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 text-red-600 font-bold px-5 py-2 rounded-xl text-sm transition-all whitespace-nowrap">
                           Re-upload
                         </button>
                       </Link>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

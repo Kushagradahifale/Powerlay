@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -29,6 +29,7 @@ import {
   CreditCard,
   Clock,
   ShieldCheck,
+  ShieldAlert,
   Home,
   LayoutDashboard,
   ListOrdered,
@@ -84,8 +85,45 @@ export default function UploadPage() {
     validateAndSetFile(selected);
   }, []);
 
+  const [activeCount, setActiveCount] = useState(0);
+  const DAILY_LIMIT = 5;
+  const isFullCapacity = activeCount >= DAILY_LIMIT;
+
+  useEffect(() => {
+    const checkCapacity = async () => {
+      const [ordersRes, uploadsRes] = await Promise.all([
+        supabase.from("orders").select("id").in("status", ["confirmed", "queued", "printing", "quality_check"]),
+        supabase.from("uploads").select("id").in("status", ["pending", "quoted"])
+      ]);
+      const activeO = ordersRes.data?.length || 0;
+      const activeU = uploadsRes.data?.length || 0;
+      setActiveCount(activeO + activeU);
+    };
+    
+    checkCapacity();
+    const interval = setInterval(checkCapacity, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const materialRate = material === "PLA" ? 6 : 8;
+  const estimatedWeight = 40 * (infill / 20);
+  const cost = estimatedWeight * materialRate * quantity;
+  const minCost = Math.max(cost, 149);
+  const estimatedTotal = minCost + 60;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isFullCapacity) {
+      toast.error("We are fully booked today. Please try again later or contact us on WhatsApp.");
+      return;
+    }
+
+    if (quantity > 5) {
+      toast.error("Maximum quantity is 5 per order for now.");
+      return;
+    }
 
     if (!file) {
       toast.error("Please select an STL file to upload.");
@@ -240,6 +278,26 @@ export default function UploadPage() {
             Upload your STL file and get a quote within 24 hours. Premium quality FDM printing delivered to your door.
           </motion.p>
         </div>
+
+        {isFullCapacity && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 bg-red-50 border-2 border-red-200 rounded-2xl p-6 text-center max-w-2xl mx-auto shadow-sm"
+          >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <ShieldAlert className="w-8 h-8 text-red-500 shrink-0" />
+              <div className="text-left">
+                <h3 className="text-red-800 font-bold text-lg mb-1">
+                  ⚠️ We are fully booked today.
+                </h3>
+                <p className="text-red-600 font-medium">
+                  Please try again tomorrow. Our printers are currently at maximum capacity.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         <form onSubmit={handleSubmit} className="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
           {/* LEFT: FORM STEPS */}
@@ -426,10 +484,10 @@ export default function UploadPage() {
                     id="quantity-input"
                     type="number"
                     min={1}
-                    max={100}
+                    max={5}
                     value={quantity}
                     onChange={(e) =>
-                      setQuantity(Math.max(1, Math.min(100, Number(e.target.value))))
+                      setQuantity(Math.max(1, Math.min(5, Number(e.target.value))))
                     }
                     className="h-12 bg-slate-50 border-slate-200 text-[#0F172A] rounded-xl focus-visible:ring-violet-500"
                   />
@@ -468,7 +526,7 @@ export default function UploadPage() {
                   4
                 </span>
                 <h3 className="text-xl font-bold text-[#0F172A]">
-                  Quote Summary
+                  Estimated Price
                 </h3>
               </div>
 
@@ -510,13 +568,13 @@ export default function UploadPage() {
                     Estimated Total
                   </span>
                   <span className="font-bold text-xl bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
-                    ₹149 – ₹499+
+                    ~₹{Math.round(estimatedTotal)}
                   </span>
                 </div>
 
                 {/* Smart Explanation */}
                 <p className="text-xs text-slate-500">
-                  Based on typical {material} prints. Final cost depends on weight & complexity.
+                  Final price after file review. Based on estimated {Math.round(estimatedWeight)}g weight.
                 </p>
 
                 {/* Info Box */}
@@ -543,7 +601,7 @@ export default function UploadPage() {
 
               <button
                 type="submit"
-                disabled={uploading}
+                disabled={uploading || isFullCapacity}
                 className="w-full relative group overflow-hidden rounded-2xl p-[1px] disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-violet-600 to-blue-600 rounded-2xl opacity-100 group-hover:opacity-90 transition-opacity" />

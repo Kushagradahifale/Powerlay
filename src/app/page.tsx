@@ -356,12 +356,25 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
+      if (data.user) {
+        supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .single()
+          .then(({ data: profile }) => {
+            if (profile) {
+              setUserRole(profile.role);
+            }
+          });
+      }
     });
   }, []);
 
@@ -504,6 +517,7 @@ export default function Home() {
                         <p className="text-xs text-[#64748B] truncate">{user.email}</p>
                       </div>
                       {[
+                        ...(userRole === "admin" ? [{ label: '🛡️ Admin Panel', href: '/admin' }] : []),
                         { label: '📊 Dashboard', href: '/dashboard' },
                         { label: '📦 Orders', href: '/orders' },
                         { label: '⬆️ Upload', href: '/upload' },

@@ -46,12 +46,14 @@ interface Order {
   created_at: string;
 }
 
-const ORDER_STATUSES = ["confirmed", "printing", "shipped", "delivered", "cancelled"] as const;
+const ORDER_STATUSES = ["confirmed", "queued", "printing", "quality_check", "shipped", "delivered", "cancelled"] as const;
 
 function orderStatusEmoji(status: string) {
   switch (status) {
     case "confirmed": return "🔵";
+    case "queued": return "⏳";
     case "printing": return "🟣";
+    case "quality_check": return "🔍";
     case "shipped": return "🟠";
     case "delivered": return "🟢";
     case "cancelled": return "🔴";
@@ -62,7 +64,9 @@ function orderStatusEmoji(status: string) {
 function orderStatusBadgeClass(status: string) {
   switch (status) {
     case "confirmed": return "bg-blue-100 text-blue-800 border-blue-200";
+    case "queued": return "bg-yellow-100 text-yellow-800 border-yellow-200";
     case "printing": return "bg-violet-100 text-violet-800 border-violet-200";
+    case "quality_check": return "bg-cyan-100 text-cyan-800 border-cyan-200";
     case "shipped": return "bg-orange-100 text-orange-800 border-orange-200";
     case "delivered": return "bg-emerald-100 text-emerald-800 border-emerald-200";
     case "cancelled": return "bg-red-100 text-red-800 border-red-200";
@@ -80,6 +84,15 @@ export default function AdminPage() {
   const [orderStatusLoading, setOrderStatusLoading] = useState<string | null>(null);
   const [weights, setWeights] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<"uploads" | "orders">("uploads");
+  const [adminEmail, setAdminEmail] = useState<string | null>(null);
+  const [adminNotes, setAdminNotes] = useState<Record<string, string>>({});
+  const [priorities, setPriorities] = useState<Record<string, string>>({});
+  const [printTimes, setPrintTimes] = useState<Record<string, string>>({});
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   const getMaterialRate = (material: string) => {
     return material.toUpperCase() === "PETG" ? 8 : 6;
@@ -119,10 +132,23 @@ export default function AdminPage() {
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (!user || user.email !== "kushagradahifale6@gmail.com") {
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile || profile.role !== "admin") {
         router.push("/dashboard");
         return;
       }
+      
+      setAdminEmail(user.email);
 
       await Promise.all([fetchUploads(), fetchOrders()]);
       setLoading(false);
@@ -223,6 +249,16 @@ export default function AdminPage() {
   const quotedCount = uploads.filter((u) => u.status === "quoted").length;
   const rejectedCount = uploads.filter((u) => u.status === "rejected").length;
 
+  const activeOrdersCount = orders.filter((o) => ["confirmed", "queued", "printing", "quality_check"].includes(o.status)).length;
+  const activeUploadsCount = uploads.filter((u) => ["pending", "quoted"].includes(u.status)).length;
+  const totalActiveWorkload = activeOrdersCount + activeUploadsCount;
+  
+  const DAILY_LIMIT = 5;
+  const availableSlots = Math.max(0, DAILY_LIMIT - totalActiveWorkload);
+  let workloadStatus = "Normal";
+  if (totalActiveWorkload >= DAILY_LIMIT) workloadStatus = "Full";
+  else if (totalActiveWorkload >= 3) workloadStatus = "Busy";
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -268,9 +304,17 @@ export default function AdminPage() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-md cursor-default">
-            <ShieldAlert className="w-4 h-4 text-violet-400" />
-            <span className="hidden sm:inline">Admin</span>
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2 bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-md cursor-default">
+              <ShieldAlert className="w-4 h-4 text-violet-400" />
+              <span>{adminEmail || "Admin"}</span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="text-sm font-bold text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl transition-colors"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </nav>
@@ -290,6 +334,41 @@ export default function AdminPage() {
           <p className="text-slate-500 text-lg max-w-2xl">
             Review uploads, send quotes, and manage orders.
           </p>
+        </div>
+
+        {/* CAPACITY PANEL */}
+        <div className="mb-10 bg-white/80 backdrop-blur-xl border border-slate-200 shadow-sm rounded-3xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-[#0F172A] flex items-center gap-2">
+              <Printer className="w-5 h-5 text-violet-600" />
+              Printer Capacity Control
+            </h2>
+            <div className={`px-3 py-1 rounded-full text-xs font-bold border ${workloadStatus === "Full" ? "bg-red-100 text-red-800 border-red-200" : workloadStatus === "Busy" ? "bg-orange-100 text-orange-800 border-orange-200" : "bg-green-100 text-green-800 border-green-200"}`}>
+              Status: {workloadStatus}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center flex flex-col justify-center">
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide mb-1">Daily Limit</p>
+              <p className="text-2xl font-extrabold text-[#0F172A]">{DAILY_LIMIT}</p>
+            </div>
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center flex flex-col justify-center">
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide mb-1">Active Workload</p>
+              <p className="text-2xl font-extrabold text-violet-600">{totalActiveWorkload}</p>
+            </div>
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-center flex flex-col justify-center">
+              <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide mb-1">Available Slots</p>
+              <p className={`text-2xl font-extrabold ${availableSlots === 0 ? "text-red-500" : "text-emerald-500"}`}>{availableSlots}</p>
+            </div>
+          </div>
+
+          {workloadStatus === "Full" && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-800 flex items-center gap-2 font-medium">
+              <ShieldAlert className="w-5 h-5 shrink-0" />
+              Printer capacity full. Avoid accepting new orders.
+            </div>
+          )}
         </div>
 
         {/* TAB SWITCHER */}
@@ -651,6 +730,42 @@ export default function AdminPage() {
                     <div>
                       <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Tracking</p>
                       <p className="text-[#0F172A] font-bold text-sm">{order.tracking_number || "—"}</p>
+                    </div>
+                  </div>
+
+                  {/* Priority & Internal Controls */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-amber-50/50 border border-amber-100 rounded-2xl p-5 mb-6">
+                    <div>
+                      <p className="text-amber-800 text-xs font-semibold mb-1 uppercase tracking-wide">Priority (Local)</p>
+                      <select 
+                        className="w-full bg-white border border-amber-200 text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-amber-400"
+                        value={priorities[order.id] || "Normal"}
+                        onChange={(e) => setPriorities({...priorities, [order.id]: e.target.value})}
+                      >
+                        <option value="Normal">Normal</option>
+                        <option value="Urgent">Urgent 🔥</option>
+                        <option value="Hold">On Hold ⏸️</option>
+                      </select>
+                    </div>
+                    <div>
+                      <p className="text-amber-800 text-xs font-semibold mb-1 uppercase tracking-wide">Est. Print Time</p>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. 4h 30m"
+                        className="w-full bg-white border border-amber-200 text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-amber-400"
+                        value={printTimes[order.id] || ""}
+                        onChange={(e) => setPrintTimes({...printTimes, [order.id]: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-amber-800 text-xs font-semibold mb-1 uppercase tracking-wide">Internal Note</p>
+                      <input 
+                        type="text" 
+                        placeholder="Admin notes..."
+                        className="w-full bg-white border border-amber-200 text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-amber-400"
+                        value={adminNotes[order.id] || ""}
+                        onChange={(e) => setAdminNotes({...adminNotes, [order.id]: e.target.value})}
+                      />
                     </div>
                   </div>
 
