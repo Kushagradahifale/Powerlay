@@ -63,11 +63,13 @@ function PricingCalculator() {
   const [material, setMaterial] = useState<'PLA' | 'PETG'>('PLA');
   const [weight, setWeight] = useState(50);
 
-  const pricePerGram = material === 'PLA' ? 5 : 7;
-  const baseCost = weight * pricePerGram;
-  const gst = Math.round(baseCost * 0.18);
-  const shipping = 60;
-  const total = baseCost + gst + shipping;
+  const pricePerGram = material === "PLA" ? 6 : 8;
+  const minimumOrder = 149;
+  const estimatedShipping = 60;
+
+  const rawCost = weight * pricePerGram;
+  const baseCost = Math.max(rawCost, minimumOrder);
+  const total = baseCost + estimatedShipping;
 
   return (
     <div className="space-y-8">
@@ -82,8 +84,8 @@ function PricingCalculator() {
               : 'border-slate-200 text-[#64748B] hover:border-[#7C3AED] hover:text-[#7C3AED] hover:shadow-md hover:bg-purple-50'
               }`}
           >
-            🌱 PLA Standard
-            <div className={`text-xs font-normal mt-1 ${material === 'PLA' ? 'text-[#0F172A]' : 'text-[#64748B]'}`}>₹5/gram</div>
+            PLA Standard
+            <div className={`text-xs font-normal mt-1 ${material === 'PLA' ? 'text-[#0F172A]' : 'text-[#64748B]'}`}>Starting at ₹5.99/g</div>
           </button>
           <button
             onClick={() => setMaterial('PETG')}
@@ -92,8 +94,8 @@ function PricingCalculator() {
               : 'border-slate-200 text-[#64748B] hover:border-[#7C3AED] hover:text-[#7C3AED] hover:shadow-md hover:bg-purple-50'
               }`}
           >
-            ⚙️ PETG Engineering
-            <div className={`text-xs font-normal mt-1 ${material === 'PETG' ? 'text-[#0F172A]' : 'text-[#64748B]'}`}>₹7/gram</div>
+            PETG Engineering
+            <div className={`text-xs font-normal mt-1 ${material === 'PETG' ? 'text-[#0F172A]' : 'text-[#64748B]'}`}>Starting at ₹6.99/g</div>
           </button>
         </div>
       </div>
@@ -128,33 +130,38 @@ function PricingCalculator() {
       {/* Price Breakdown */}
       <div className="bg-gradient-to-br from-slate-50 to-purple-50/30 rounded-2xl p-5 space-y-3 border border-slate-100">
         <div className="flex justify-between text-sm">
-          <span className="text-[#64748B]">Print Cost ({material})</span>
+          <span className="text-[#64748B]">Print Cost ({material}) {rawCost < minimumOrder && "(Min applied)"}</span>
           <span className="font-semibold text-[#0F172A]">₹{baseCost}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-[#64748B]">GST (18%)</span>
-          <span className="font-semibold text-[#0F172A]">₹{gst}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-[#64748B]">Shipping</span>
-          <span className="font-semibold text-[#0F172A]">₹{shipping}</span>
+          <span className="text-[#64748B]">Estimated Shipping</span>
+          <span className="font-semibold text-[#0F172A]">₹{estimatedShipping}</span>
         </div>
         <div className="border-t border-slate-200 pt-3 mt-3 flex justify-between items-center">
           <span className="font-bold text-lg text-[#0F172A]">Estimated Total</span>
           <span className="font-bold text-2xl gradient-text">₹{total}</span>
         </div>
+        <p className="text-center text-xs text-[#94A3B8]">
+          * Minimum order ₹149 applied if needed. Final price confirmed after file review.
+        </p>
+        <p className="text-center text-xs text-[#94A3B8]">
+          * Final price and shipping may vary after file and address review.
+        </p>
+        <p className="text-center text-xs text-[#94A3B8]">
+          * Final price based on actual file analysis
+        </p>
       </div>
 
       {/* CTA */}
-      <Link
-        href="/upload"
-        className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
-      >
-        Get Exact Quote →
-      </Link>
-      <p className="text-center text-xs text-[#94A3B8]">
-        * Final price based on actual file analysis
-      </p>
+      <div className="flex justify-center mt-8">
+        <Link
+          href="/upload"
+          className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
+        >
+          Get Your Quote →
+        </Link>
+      </div>
+
     </div>
   );
 }
@@ -372,7 +379,7 @@ export default function Home() {
     {
       question: "How is pricing calculated?",
       answer:
-        "Pricing is based on material weight, material type (PLA at ₹5/gram, PETG at ₹7/gram), plus 18% GST and ₹60 flat shipping across India.",
+        "Pricing is based on material weight, material type (PLA at Starting at ₹5.99/g, PETG at Starting at ₹6.99/g), plus 18% GST and ₹60 flat Estimatedd Shipping across India.",
     },
     {
       question: "Do you offer bulk discounts?",
@@ -382,7 +389,7 @@ export default function Home() {
     {
       question: "What if my print fails or has defects?",
       answer:
-        "Every print is quality-checked before shipping. If there's any defect, we'll reprint it for free. Your satisfaction is guaranteed.",
+        "Every print is quality-checked before Estimated Shipping. If there's any defect, we'll reprint it for free. Your satisfaction is guaranteed.",
     },
     {
       question: "Can you help me design my 3D model?",
@@ -392,7 +399,7 @@ export default function Home() {
     {
       question: "Do you ship outside India?",
       answer:
-        "Currently we only ship within India. International shipping is coming soon!",
+        "Currently we only ship within India. International Estimated Shipping is coming soon!",
     },
   ];
   return (
@@ -1105,7 +1112,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {[
               { emoji: '⚡', title: 'Fast Delivery', description: 'Get your 3D prints in just 2-3 business days. We prioritize speed without compromising quality.' },
-              { emoji: '🛡️', title: 'Quality Guaranteed', description: 'Every print is 100% quality checked before shipping. We stand behind our work.' },
+              { emoji: '🛡️', title: 'Quality Guaranteed', description: 'Every print is 100% quality checked before Estimated Shipping. We stand behind our work.' },
               { emoji: '💳', title: 'Secure Payment', description: 'Pay securely through Razorpay. Multiple options including cards, UPI, and wallets.' },
             ].map((item, idx) => (
               <ScrollFadeIn key={idx} delay={idx * 0.1}>
