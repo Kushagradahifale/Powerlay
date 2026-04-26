@@ -25,7 +25,7 @@ export default function LoginPage() {
       if (error) {
         toast.error(error.message);
       } else {
-        router.push("/dashboard");
+        router.push("/");
       }
     } else {
       const { data, error } = await supabase.auth.signUp({ email, password });
@@ -51,7 +51,7 @@ export default function LoginPage() {
   async function handleGoogleLogin() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin + "/dashboard" },
+      options: { redirectTo: window.location.origin + "/" },
     });
     if (error) {
       toast.error(error.message);

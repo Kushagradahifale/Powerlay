@@ -296,21 +296,19 @@ export default function AdminPage() {
         <div className="flex items-center gap-2 mb-10 bg-white/60 backdrop-blur-xl border border-slate-200 rounded-2xl p-1.5 w-fit">
           <button
             onClick={() => setActiveTab("uploads")}
-            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-              activeTab === "uploads"
-                ? "bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-md"
-                : "text-slate-600 hover:bg-slate-100"
-            }`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "uploads"
+              ? "bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-md"
+              : "text-slate-600 hover:bg-slate-100"
+              }`}
           >
             📦 Uploads ({uploads.length})
           </button>
           <button
             onClick={() => setActiveTab("orders")}
-            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-              activeTab === "orders"
-                ? "bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-md"
-                : "text-slate-600 hover:bg-slate-100"
-            }`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "orders"
+              ? "bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-md"
+              : "text-slate-600 hover:bg-slate-100"
+              }`}
           >
             🛒 Orders ({orders.length})
           </button>
@@ -365,220 +363,225 @@ export default function AdminPage() {
 
         {/* UPLOADS LIST */}
         {activeTab === "uploads" && (
-        <div className="space-y-6">
-          {uploads.length === 0 ? (
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200 shadow-sm p-16 text-center">
-              <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <UploadCloud className="w-10 h-10 text-slate-400" />
+          <div className="space-y-6">
+            {uploads.length === 0 ? (
+              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200 shadow-sm p-16 text-center">
+                <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <UploadCloud className="w-10 h-10 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-bold text-[#0F172A] mb-2">No uploads yet</h3>
+                <p className="text-slate-500 max-w-md mx-auto">
+                  When customers submit their 3D models for a quote, they will appear here.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-[#0F172A] mb-2">No uploads yet</h3>
-              <p className="text-slate-500 max-w-md mx-auto">
-                When customers submit their 3D models for a quote, they will appear here.
-              </p>
-            </div>
-          ) : (
-            uploads.map((upload) => (
-              <div
-                key={upload.id}
-                className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-sm border border-slate-200 p-6 lg:p-8 hover:shadow-md transition-shadow duration-300"
-              >
-                {/* Top Row: File name + Status */}
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                  <div>
-                    <h3 className="font-bold text-[#0F172A] text-xl truncate max-w-lg mb-2">
-                      {upload.file_name}
-                    </h3>
-                    <div className="flex items-center gap-3 text-sm text-slate-500">
-                      <span className="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-medium">
-                        <Clock className="w-4 h-4" />
-                        {formatDate(upload.created_at)}
+            ) : (
+
+              uploads.map((upload) => {
+                const suggested = calcSuggestedQuote(upload.id, upload.material, upload.quantity);
+
+                return (
+                  <div
+                    key={upload.id}
+                    className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-sm border border-slate-200 p-6 lg:p-8 hover:shadow-md transition-shadow duration-300"
+                  >
+                    {/* Top Row: File name + Status */}
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                      <div>
+                        <h3 className="font-bold text-[#0F172A] text-xl truncate max-w-lg mb-2">
+                          {upload.file_name}
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm text-slate-500">
+                          <span className="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-medium">
+                            <Clock className="w-4 h-4" />
+                            {formatDate(upload.created_at)}
+                          </span>
+                          <span className="text-xs break-all hidden sm:inline-block">ID: {upload.id}</span>
+                        </div>
+                      </div>
+
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${statusBadge(upload.status)}`}
+                      >
+                        {upload.status === "pending" && "🟡"}
+                        {upload.status === "quoted" && "🔵"}
+                        {upload.status === "paid" && "🟢"}
+                        {upload.status === "rejected" && "🔴"}
+                        {upload.status.toUpperCase()}
                       </span>
-                      <span className="text-xs break-all hidden sm:inline-block">ID: {upload.id}</span>
-                    </div>
-                  </div>
-                  
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${statusBadge(upload.status)}`}
-                  >
-                    {upload.status === "pending" && "🟡"}
-                    {upload.status === "quoted" && "🔵"}
-                    {upload.status === "paid" && "🟢"}
-                    {upload.status === "rejected" && "🔴"}
-                    {upload.status.toUpperCase()}
-                  </span>
-                </div>
-
-                {/* Details Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 border border-slate-100 rounded-2xl p-5 mb-6">
-                  <div>
-                    <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Material</p>
-                    <p className="text-[#0F172A] font-bold">{upload.material}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Quantity</p>
-                    <p className="text-[#0F172A] font-bold">{upload.quantity}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Infill</p>
-                    <p className="text-[#0F172A] font-bold">{upload.infill_percent}%</p>
-                  </div>
-                  {upload.price_quoted != null && (
-                    <div>
-                      <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Quoted Price</p>
-                      <p className="text-[#0F172A] font-bold bg-green-100 text-green-800 px-2 py-0.5 rounded inline-block">
-                        ₹{upload.price_quoted}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Notes */}
-                {upload.notes && (
-                  <div className="mb-6 bg-amber-50/50 border border-amber-100 rounded-2xl p-4">
-                    <p className="text-amber-800 text-xs font-bold mb-1 uppercase tracking-wide">Customer Notes</p>
-                    <p className="text-amber-900 text-sm">{upload.notes}</p>
-                  </div>
-                )}
-
-                {/* Quote Calculator (only for pending) */}
-                {upload.status === "pending" && (
-                  <div className="mb-6 bg-violet-50/70 border border-violet-100 rounded-2xl p-5">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="p-1.5 rounded-lg bg-violet-100">
-                        <Calculator className="w-4 h-4 text-violet-600" />
-                      </div>
-                      <p className="text-sm font-bold text-violet-900">Quote Calculator</p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                      {/* Weight Input */}
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 border border-slate-100 rounded-2xl p-5 mb-6">
                       <div>
-                        <label className="text-xs font-semibold text-violet-700 uppercase tracking-wide mb-1.5 block">
-                          Est. Weight (g)
-                        </label>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Weight className="h-4 w-4 text-violet-400" />
+                        <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Material</p>
+                        <p className="text-[#0F172A] font-bold">{upload.material}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Quantity</p>
+                        <p className="text-[#0F172A] font-bold">{upload.quantity}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Infill</p>
+                        <p className="text-[#0F172A] font-bold">{upload.infill_percent}%</p>
+                      </div>
+                      {upload.price_quoted != null && (
+                        <div>
+                          <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Quoted Price</p>
+                          <p className="text-[#0F172A] font-bold bg-green-100 text-green-800 px-2 py-0.5 rounded inline-block">
+                            ₹{upload.price_quoted}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Notes */}
+                    {upload.notes && (
+                      <div className="mb-6 bg-amber-50/50 border border-amber-100 rounded-2xl p-4">
+                        <p className="text-amber-800 text-xs font-bold mb-1 uppercase tracking-wide">Customer Notes</p>
+                        <p className="text-amber-900 text-sm">{upload.notes}</p>
+                      </div>
+                    )}
+
+                    {/* Quote Calculator (only for pending) */}
+                    {upload.status === "pending" && (
+                      <div className="mb-6 bg-violet-50/70 border border-violet-100 rounded-2xl p-5">
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="p-1.5 rounded-lg bg-violet-100">
+                            <Calculator className="w-4 h-4 text-violet-600" />
                           </div>
-                          <input
-                            type="number"
-                            min={1}
-                            placeholder="e.g. 45"
-                            value={weights[upload.id] ?? ""}
-                            onChange={(e) =>
-                              setWeights((prev) => ({
-                                ...prev,
-                                [upload.id]: e.target.value,
-                              }))
-                            }
-                            className="pl-9 pr-3 py-2.5 border border-violet-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-violet-400 focus:border-violet-400 font-medium text-[#0F172A] bg-white outline-none transition-all"
-                          />
+                          <p className="text-sm font-bold text-violet-900">Quote Calculator</p>
                         </div>
-                      </div>
 
-                      {/* Breakdown */}
-                      <div className="bg-white/80 rounded-xl border border-violet-100 p-3 space-y-1.5">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Rate</span>
-                          <span className="font-semibold text-[#0F172A]">₹{getMaterialRate(upload.material)}/g × {upload.quantity} qty</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Min Order</span>
-                          <span className="font-semibold text-[#0F172A]">₹149</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Shipping</span>
-                          <span className="font-semibold text-[#0F172A]">₹60</span>
-                        </div>
-                      </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                          {/* Weight Input */}
+                          <div>
+                            <label className="text-xs font-semibold text-violet-700 uppercase tracking-wide mb-1.5 block">
+                              Est. Weight (g)
+                            </label>
+                            <div className="relative">
+                              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Weight className="h-4 w-4 text-violet-400" />
+                              </div>
+                              <input
+                                type="number"
+                                min={1}
+                                placeholder="e.g. 45"
+                                value={weights[upload.id] ?? ""}
+                                onChange={(e) =>
+                                  setWeights((prev) => ({
+                                    ...prev,
+                                    [upload.id]: e.target.value,
+                                  }))
+                                }
+                                className="pl-9 pr-3 py-2.5 border border-violet-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-violet-400 focus:border-violet-400 font-medium text-[#0F172A] bg-white outline-none transition-all"
+                              />
+                            </div>
+                          </div>
 
-                      {/* Suggested Price */}
-                      <div className="bg-white/80 rounded-xl border border-violet-100 p-3 flex flex-col justify-center items-center">
-                        <p className="text-xs text-slate-500 mb-1">Suggested Quote</p>
-                        <p className="text-2xl font-extrabold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
-                          {calcSuggestedQuote(upload.id, upload.material, upload.quantity) != null
-                            ? `₹${calcSuggestedQuote(upload.id, upload.material, upload.quantity)}`
-                            : "—"}
-                        </p>
-                      </div>
+                          {/* Breakdown */}
+                          <div className="bg-white/80 rounded-xl border border-violet-100 p-3 space-y-1.5">
+                            <div className="flex justify-between text-xs">
+                              <span className="text-slate-500">Rate</span>
+                              <span className="font-semibold text-[#0F172A]">₹{getMaterialRate(upload.material)}/g × {upload.quantity} qty</span>
+                            </div>
+                            <div className="flex justify-between text-xs">
+                              <span className="text-slate-500">Min Order</span>
+                              <span className="font-semibold text-[#0F172A]">₹149</span>
+                            </div>
+                            <div className="flex justify-between text-xs">
+                              <span className="text-slate-500">Shipping</span>
+                              <span className="font-semibold text-[#0F172A]">₹60</span>
+                            </div>
+                          </div>
 
-                      {/* Use Suggested Price Button */}
-                      <div>
-                        <button
-                          type="button"
-                          disabled={calcSuggestedQuote(upload.id, upload.material, upload.quantity) == null}
-                          onClick={() => {
-                            const suggested = calcSuggestedQuote(upload.id, upload.material, upload.quantity);
-                            if (suggested != null) {
-                              setPrices((prev) => ({ ...prev, [upload.id]: String(suggested) }));
-                            }
-                          }}
-                          className="w-full inline-flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5 shadow-sm"
-                        >
-                          <Zap className="w-4 h-4" />
-                          Use Suggested Price
-                        </button>
+                          {/* Suggested Price */}
+                          <div className="bg-white/80 rounded-xl border border-violet-100 p-3 flex flex-col justify-center items-center">
+                            <p className="text-xs text-slate-500 mb-1">Suggested Quote</p>
+                            <p className="text-2xl font-extrabold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
+                              {calcSuggestedQuote(upload.id, upload.material, upload.quantity) != null
+                                ? `₹${calcSuggestedQuote(upload.id, upload.material, upload.quantity)}`
+                                : "—"}
+                            </p>
+                          </div>
+
+                          {/* Use Suggested Price Button */}
+                          <div>
+                            <button
+                              type="button"
+                              disabled={calcSuggestedQuote(upload.id, upload.material, upload.quantity) == null}
+                              onClick={() => {
+                                const suggested = calcSuggestedQuote(upload.id, upload.material, upload.quantity);
+                                if (suggested != null) {
+                                  setPrices((prev) => ({ ...prev, [upload.id]: String(suggested) }));
+                                }
+                              }}
+                              className="w-full inline-flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5 shadow-sm"
+                            >
+                              <Zap className="w-4 h-4" />
+                              Use Suggested Price
+                            </button>
+                          </div>
+                        </div>
                       </div>
+                    )}
+
+                    {/* Actions Row */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-slate-100">
+
+                      {/* Download Link */}
+                      <a
+                        href={upload.file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition-colors border border-slate-200"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download STL
+                      </a>
+
+                      {/* Actions (only for pending) */}
+                      {upload.status === "pending" && (
+                        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                          <div className="relative w-full sm:w-auto">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <IndianRupee className="h-4 w-4 text-slate-400" />
+                            </div>
+                            <input
+                              type="number"
+                              min={1}
+                              placeholder="Amount"
+                              value={prices[upload.id] ?? ""}
+                              onChange={(e) =>
+                                setPrices((prev) => ({
+                                  ...prev,
+                                  [upload.id]: e.target.value,
+                                }))
+                              }
+                              className="pl-9 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm w-full sm:w-32 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 font-medium text-[#0F172A] bg-white outline-none transition-all"
+                            />
+                          </div>
+                          <button
+                            onClick={() => handleSendQuote(upload.id)}
+                            disabled={actionLoading === upload.id}
+                            className="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5"
+                          >
+                            {actionLoading === upload.id ? "Sending..." : "Send Quote"}
+                          </button>
+                          <button
+                            onClick={() => handleReject(upload.id)}
+                            disabled={actionLoading === upload.id}
+                            className="w-full sm:w-auto inline-flex items-center justify-center bg-white border-2 border-red-200 hover:border-red-500 hover:bg-red-50 text-red-600 px-6 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                          >
+                            {actionLoading === upload.id ? "Working..." : "Reject"}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
-                )}
-
-                {/* Actions Row */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-slate-100">
-                  
-                  {/* Download Link */}
-                  <a
-                    href={upload.file_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition-colors border border-slate-200"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download STL
-                  </a>
-
-                  {/* Actions (only for pending) */}
-                  {upload.status === "pending" && (
-                    <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                      <div className="relative w-full sm:w-auto">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <IndianRupee className="h-4 w-4 text-slate-400" />
-                        </div>
-                        <input
-                          type="number"
-                          min={1}
-                          placeholder="Amount"
-                          value={prices[upload.id] ?? ""}
-                          onChange={(e) =>
-                            setPrices((prev) => ({
-                              ...prev,
-                              [upload.id]: e.target.value,
-                            }))
-                          }
-                          className="pl-9 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm w-full sm:w-32 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 font-medium text-[#0F172A] bg-white outline-none transition-all"
-                        />
-                      </div>
-                      <button
-                        onClick={() => handleSendQuote(upload.id)}
-                        disabled={actionLoading === upload.id}
-                        className="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5"
-                      >
-                        {actionLoading === upload.id ? "Sending..." : "Send Quote"}
-                      </button>
-                      <button
-                        onClick={() => handleReject(upload.id)}
-                        disabled={actionLoading === upload.id}
-                        className="w-full sm:w-auto inline-flex items-center justify-center bg-white border-2 border-red-200 hover:border-red-500 hover:bg-red-50 text-red-600 px-6 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                      >
-                        {actionLoading === upload.id ? "Working..." : "Reject"}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+                );
+              })
+            )}
+          </div>
         )}
 
         {/* ORDERS MANAGEMENT */}
@@ -662,11 +665,10 @@ export default function AdminPage() {
                             key={s}
                             disabled={isActive || orderStatusLoading === order.id}
                             onClick={() => handleUpdateOrderStatus(order.id, s)}
-                            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border transition-all disabled:cursor-not-allowed ${
-                              isActive
-                                ? `${orderStatusBadgeClass(s)} ring-2 ring-offset-1 ring-current opacity-100`
-                                : `bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:-translate-y-0.5 disabled:opacity-50`
-                            }`}
+                            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border transition-all disabled:cursor-not-allowed ${isActive
+                              ? `${orderStatusBadgeClass(s)} ring-2 ring-offset-1 ring-current opacity-100`
+                              : `bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:-translate-y-0.5 disabled:opacity-50`
+                              }`}
                           >
                             {orderStatusLoading === order.id ? (
                               <RefreshCw className="w-3 h-3 animate-spin" />

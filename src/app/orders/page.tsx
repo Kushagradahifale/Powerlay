@@ -104,20 +104,18 @@ function ProgressStepper({ currentStatus }: { currentStatus: string }) {
               {/* Step circle */}
               <div className="flex flex-col items-center gap-1.5 min-w-[60px]">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    isCompleted
-                      ? isCurrent
-                        ? `${meta.bg} ring-2 ring-offset-2 ring-current ${meta.color} shadow-md`
-                        : `${meta.bg} ${meta.color}`
-                      : "bg-slate-100 text-slate-400"
-                  }`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isCompleted
+                    ? isCurrent
+                      ? `${meta.bg} ring-2 ring-offset-2 ring-current ${meta.color} shadow-md`
+                      : `${meta.bg} ${meta.color}`
+                    : "bg-slate-100 text-slate-400"
+                    }`}
                 >
                   <Icon className="w-5 h-5" />
                 </div>
                 <span
-                  className={`text-[11px] font-semibold text-center leading-tight ${
-                    isCompleted ? "text-[#0F172A]" : "text-slate-400"
-                  }`}
+                  className={`text-[11px] font-semibold text-center leading-tight ${isCompleted ? "text-[#0F172A]" : "text-slate-400"
+                    }`}
                 >
                   {meta.label}
                 </span>
@@ -127,11 +125,10 @@ function ProgressStepper({ currentStatus }: { currentStatus: string }) {
               {i < STEP_ORDER.length - 1 && (
                 <div className="flex-1 mx-1 mt-[-18px]">
                   <div
-                    className={`h-1 rounded-full transition-all duration-500 ${
-                      i < currentIdx
-                        ? "bg-gradient-to-r from-violet-500 to-blue-500"
-                        : "bg-slate-200"
-                    }`}
+                    className={`h-1 rounded-full transition-all duration-500 ${i < currentIdx
+                      ? "bg-gradient-to-r from-violet-500 to-blue-500"
+                      : "bg-slate-200"
+                      }`}
                   />
                 </div>
               )}
@@ -151,17 +148,30 @@ export default function OrdersPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
+
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+
       const { data } = await supabase
         .from("orders")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
+
       setOrders(data || []);
       setLoading(false);
     };
+
     fetchOrders();
-  }, []);
+
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [router]);
 
   if (loading) return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50">

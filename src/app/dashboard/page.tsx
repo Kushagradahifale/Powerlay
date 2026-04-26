@@ -23,6 +23,8 @@ interface Order {
   created_at: string;
 }
 
+const ORDER_STEPS = ["confirmed", "printing", "shipped", "delivered"];
+
 export default function DashboardPage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string>("");
@@ -107,6 +109,10 @@ export default function DashboardPage() {
     }
   };
 
+  const getStepIndex = (status: string) => {
+    return ORDER_STEPS.indexOf(status);
+  };
+
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleDateString("en-GB", {
@@ -138,10 +144,11 @@ export default function DashboardPage() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-6 text-sm">
-            <Link href="/dashboard" className="hover:text-[#7C3AED]">Dashboard</Link>
-            <Link href="/orders" className="hover:text-[#7C3AED]">Orders</Link>
-            <Link href="/upload" className="hover:text-[#7C3AED]">Upload</Link>
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <Link href="/" className="text-[#64748B] hover:text-[#7C3AED] transition-colors">Home</Link>
+            <Link href="/dashboard" className="text-[#7C3AED] font-bold">Dashboard</Link>
+            <Link href="/orders" className="text-[#64748B] hover:text-[#7C3AED] transition-colors">Orders</Link>
+            <Link href="/upload" className="text-[#64748B] hover:text-[#7C3AED] transition-colors">Upload</Link>
           </div>
 
         </div>
@@ -275,31 +282,56 @@ export default function DashboardPage() {
               {orders.map((order) => (
                 <div
                   key={order.id}
-                  className="glass-card rounded-2xl border border-slate-200/60 p-6 flex justify-between items-center hover:card-shadow transition-all duration-300"
+                  className="glass-card rounded-2xl border border-slate-200/60 p-6 hover:card-shadow transition-all duration-300"
                 >
-                  <div>
-                    <p className="font-bold text-[#0F172A] text-lg">
-                      Order #{order.id.slice(0, 8)}
-                    </p>
-                    <p className="text-[#64748B] text-sm mt-1">
-                      {formatDate(order.created_at)}
-                    </p>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-bold text-[#0F172A] text-lg">
+                        Order #{order.id.slice(0, 8)}
+                      </p>
+                      <p className="text-[#64748B] text-sm mt-1">
+                        {formatDate(order.created_at)}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span className={`inline-flex items-center gap-1 rounded-md px-3 py-1 text-xs font-semibold ${orderStatusBadge(order.status)}`}>
+                        {order.status === "pending" && "🟡"}
+                        {order.status === "confirmed" && "🔵"}
+                        {order.status === "printing" && "🟣"}
+                        {order.status === "shipped" && "🟠"}
+                        {order.status === "delivered" && "🟢"}
+                        {order.status === "cancelled" && "🔴"}
+
+                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      </span>
+                      <span className="text-lg font-bold text-[#0F172A]">
+                        ₹{order.total_amount}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    <span className={`inline-flex items-center gap-1 rounded-md px-3 py-1 text-xs font-semibold ${orderStatusBadge(order.status)}`}>
-                      {order.status === "pending" && "🟡"}
-                      {order.status === "confirmed" && "🔵"}
-                      {order.status === "printing" && "🟣"}
-                      {order.status === "shipped" && "🟠"}
-                      {order.status === "delivered" && "🟢"}
-                      {order.status === "cancelled" && "🔴"}
+                  {/* Order Progress Timeline */}
+                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-100">
+                    {ORDER_STEPS.map((step, i) => {
+                      const currentIndex = getStepIndex(order.status);
 
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                    </span>
-                    <span className="text-lg font-bold text-[#0F172A]">
-                      ₹{order.total_amount}
-                    </span>
+                      return (
+                        <div key={step} className="flex items-center gap-2">
+                          <div
+                            className={`w-3 h-3 rounded-full ${i <= currentIndex ? "bg-green-500" : "bg-gray-300"
+                              }`}
+                          />
+
+                          {i !== ORDER_STEPS.length - 1 && (
+                            <div
+                              className={`w-8 h-[2px] ${i < currentIndex ? "bg-green-500" : "bg-gray-300"
+                                }`}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

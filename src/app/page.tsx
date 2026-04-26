@@ -2,6 +2,7 @@
 import { Grenze, Antonio, Alice, Arimo, Inter } from 'next/font/google'
 import { FaTelegramPlane, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { supabase } from "@/lib/supabase";
 
 
 const grenze = Grenze({
@@ -24,7 +25,7 @@ const inter = Inter({
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 function OrderCounter() {
@@ -354,6 +355,32 @@ function CategoryTabs() {
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setMenuOpen(false);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -456,15 +483,64 @@ export default function Home() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Link href="/login" className="text-sm text-[#64748B] hover:text-[#7C3AED] transition-colors duration-200 hidden sm:block">
-                Sign In
-              </Link>
-              <Link
-                href="/upload"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_4px_14px_rgba(124,58,237,0.4)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.6)] hover:-translate-y-0.5 transition-all duration-300"
-              >
-                ↑ Upload STL
-              </Link>
+              {user ? (
+                <div className="relative" ref={menuRef}>
+                  <button
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#2563EB] text-white shadow-[0_4px_14px_rgba(124,58,237,0.4)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.6)] hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </span>
+                    <span className="hidden sm:inline max-w-[120px] truncate">{user.email?.split('@')[0]}</span>
+                    <svg className={`w-4 h-4 transition-transform duration-200 ${menuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {menuOpen && (
+                    <div className="absolute right-0 mt-3 w-56 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] py-2 z-[100] animate-in fade-in slide-in-from-top-2">
+                      <div className="px-4 py-3 border-b border-slate-100">
+                        <p className="text-xs text-[#64748B] truncate">{user.email}</p>
+                      </div>
+                      {[
+                        { label: '📊 Dashboard', href: '/dashboard' },
+                        { label: '📦 Orders', href: '/orders' },
+                        { label: '⬆️ Upload', href: '/upload' },
+                      ].map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setMenuOpen(false)}
+                          className="block px-4 py-2.5 text-sm font-medium text-[#1E293B] hover:bg-purple-50 hover:text-[#7C3AED] transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                      <div className="border-t border-slate-100 mt-1 pt-1">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          🚪 Logout
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Link href="/login" className="text-sm text-[#64748B] hover:text-[#7C3AED] transition-colors duration-200 hidden sm:block">
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/upload"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_4px_14px_rgba(124,58,237,0.4)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.6)] hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    ↑ Upload STL
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -673,7 +749,7 @@ export default function Home() {
       </section>
 
       {/* Pricing Calculator */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <ScrollFadeIn>
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
@@ -971,7 +1047,7 @@ export default function Home() {
           </div>
 
           {/* FAQ Section */}
-          <section className="bg-white py-20">
+          <section id="faq" className="bg-white py-20">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <ScrollFadeIn>
                 <div className="text-center mb-14">
@@ -1057,7 +1133,7 @@ export default function Home() {
               <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
                 <div className="text-white p-8" style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
                   <h3 className="text-3xl font-bold mb-2">PLA Standard </h3>
-                  <div className="text-4xl font-bold mb-1">From ₹5<span className="text-lg">/gram</span></div>
+                  <div className="text-4xl font-bold mb-1">From ₹5.99<span className="text-lg">/gram</span></div>
                   <p className="text-purple-200">Perfect for prototypes & decorative items</p>
                 </div>
                 <div className="p-8">
@@ -1080,7 +1156,7 @@ export default function Home() {
                 <div className="p-8 relative" style={{ background: 'linear-gradient(135deg, #7C3AED, #A78BFA)' }}>
                   <div className="absolute top-4 right-4 text-[#7C3AED] bg-white px-3 py-1 rounded-full text-sm font-bold">POPULAR</div>
                   <h3 className="text-3xl font-bold mb-2 text-white">PETG Engineering Grade </h3>
-                  <div className="text-4xl font-bold mb-1 text-white">From ₹7<span className="text-lg">/gram</span></div>
+                  <div className="text-4xl font-bold mb-1 text-white">From ₹7.99<span className="text-lg">/gram</span></div>
                   <p className="text-purple-200">Professional-grade engineering parts</p>
                 </div>
                 <div className="p-8">
@@ -1163,7 +1239,7 @@ export default function Home() {
       </motion.a>
 
       {/* Footer */}
-      <footer className="bg-[#0F172A] text-white py-20 relative overflow-hidden">
+      <footer id="contact" className="bg-[#0F172A] text-white py-20 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#7C3AED]/10 rounded-full filter blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
@@ -1198,11 +1274,11 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-lg mb-6 text-white tracking-wide">Support</h4>
               <ul className="space-y-4">
-                {['Contact Us', 'FAQ', 'How It Works', 'Pricing'].map((link) => (
-                  <li key={link}>
-                    <Link href="#" className="text-[#94A3B8] hover:text-[#A855F7] hover:translate-x-1 transition-all duration-300 inline-block text-base">
-                      {link}
-                    </Link>
+                {[['Contact Us', '#contact'], ['FAQ', '#faq'], ['How It Works', '#how-it-works'], ['Pricing', '#pricing']].map(([label, href]) => (
+                  <li key={label}>
+                    <a href={href} className="text-[#94A3B8] hover:text-[#A855F7] hover:translate-x-1 transition-all duration-300 inline-block text-base">
+                      {label}
+                    </a>
                   </li>
                 ))}
               </ul>
