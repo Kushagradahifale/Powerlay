@@ -127,9 +127,28 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden">
+      {/* NAVBAR */}
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50">
+        <div className="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-2xl px-6 py-3 flex items-center justify-between shadow-sm">
+
+          <Link href="/" className="flex items-center gap-2 group">
+            <img src="/logo-icon.png" className="h-7" />
+            <span className="font-bold text-[#0F172A] group-hover:text-[#7C3AED] transition">
+              POWERLAY
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-6 text-sm">
+            <Link href="/dashboard" className="hover:text-[#7C3AED]">Dashboard</Link>
+            <Link href="/orders" className="hover:text-[#7C3AED]">Orders</Link>
+            <Link href="/upload" className="hover:text-[#7C3AED]">Upload</Link>
+          </div>
+
+        </div>
+      </nav>
       <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200/20 rounded-full filter blur-3xl z-0" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-200/20 rounded-full filter blur-3xl z-0" />
-      <div className="max-w-5xl mx-auto px-4 py-12 space-y-8 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 pt-28 pb-12 space-y-8 relative z-10">
 
         {/* Welcome Card */}
         <div className="glass-card card-shadow border border-slate-200/80 rounded-3xl p-8 flex justify-between items-center bg-white/70">
@@ -146,7 +165,7 @@ export default function DashboardPage() {
 
         {/* Upload Button */}
         <div>
-          <Link href="/upload" 
+          <Link href="/upload"
             className="inline-flex items-center gap-2 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
             style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}>
             <span className="text-xl">+</span> Upload New File
@@ -188,49 +207,54 @@ export default function DashboardPage() {
                   key={upload.id}
                   className="glass-card rounded-2xl border border-slate-200/60 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:card-shadow transition-all duration-300"
                 >
-                    <div>
-                      <p className="font-bold text-[#0F172A] text-lg">{upload.file_name}</p>
-                      <p className="text-[#64748B] text-sm mt-1">
-                        {upload.material} &middot; Qty: {upload.quantity}
-                      </p>
-                    </div>
+                  <div>
+                    <p className="font-bold text-[#0F172A] text-lg">{upload.file_name}</p>
+                    <p className="text-[#64748B] text-sm mt-1">
+                      {upload.material} &middot; Qty: {upload.quantity}
+                    </p>
+                  </div>
 
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold ${uploadStatusBadge(upload.status)}`}>
-                        {upload.status}
-                      </span>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className={`inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-semibold ${uploadStatusBadge(upload.status)}`}>
+                      {upload.status === "pending" && "🟡"}
+                      {upload.status === "quoted" && "🔵"}
+                      {upload.status === "paid" && "🟢"}
+                      {upload.status === "rejected" && "🔴"}
 
-                      <span className="text-sm font-bold text-[#0F172A] min-w-20">
-                        {upload.status === "quoted" && upload.price_quoted != null
-                          ? `₹${upload.price_quoted}`
-                          : ""}
-                      </span>
+                      {upload.status.charAt(0).toUpperCase() + upload.status.slice(1)}
+                    </span>
 
-                      {upload.status === "quoted" && (
-                        <Link href={`/checkout?upload_id=${upload.id}&amount=${upload.price_quoted}`}>
-                          <button 
-                            className="text-white font-bold px-6 py-2 rounded-xl shadow-md shadow-purple-200 hover:-translate-y-0.5 transition-all text-sm"
-                            style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
-                          >
-                            Pay Now
-                          </button>
-                        </Link>
-                      )}
+                    <span className="text-sm font-bold text-[#0F172A] min-w-20">
+                      {upload.status === "quoted" && upload.price_quoted != null
+                        ? `₹${upload.price_quoted}`
+                        : ""}
+                    </span>
 
-                      {upload.status === "pending" && (
-                        <button disabled className="bg-slate-100 text-slate-400 px-6 py-2 rounded-xl text-sm font-medium cursor-not-allowed">
-                          Awaiting Quote
+                    {upload.status === "quoted" && (
+                      <Link href={`/checkout?upload_id=${upload.id}&amount=${upload.price_quoted}`}>
+                        <button
+                          className="text-white font-bold px-6 py-2 rounded-xl shadow-md shadow-purple-200 hover:-translate-y-0.5 transition-all text-sm"
+                          style={{ background: 'linear-gradient(135deg, #7C3AED, #2563EB)' }}
+                        >
+                          Pay Now
                         </button>
-                      )}
+                      </Link>
+                    )}
 
-                      {upload.status === "rejected" && (
-                        <Link href="/upload">
-                          <button className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl px-6 py-2 text-sm font-semibold transition-colors">
-                            Re-upload
-                          </button>
-                        </Link>
-                      )}
-                    </div>
+                    {upload.status === "pending" && (
+                      <button disabled className="bg-slate-100 text-slate-400 px-6 py-2 rounded-xl text-sm font-medium cursor-not-allowed">
+                        Awaiting Quote
+                      </button>
+                    )}
+
+                    {upload.status === "rejected" && (
+                      <Link href="/upload">
+                        <button className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl px-6 py-2 text-sm font-semibold transition-colors">
+                          Re-upload
+                        </button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -253,23 +277,30 @@ export default function DashboardPage() {
                   key={order.id}
                   className="glass-card rounded-2xl border border-slate-200/60 p-6 flex justify-between items-center hover:card-shadow transition-all duration-300"
                 >
-                    <div>
-                      <p className="font-bold text-[#0F172A] text-lg">
-                        Order #{order.id.slice(0, 8)}
-                      </p>
-                      <p className="text-[#64748B] text-sm mt-1">
-                        {formatDate(order.created_at)}
-                      </p>
-                    </div>
+                  <div>
+                    <p className="font-bold text-[#0F172A] text-lg">
+                      Order #{order.id.slice(0, 8)}
+                    </p>
+                    <p className="text-[#64748B] text-sm mt-1">
+                      {formatDate(order.created_at)}
+                    </p>
+                  </div>
 
-                    <div className="flex items-center gap-4">
-                      <span className={`inline-flex items-center rounded-md px-3 py-1 text-xs font-semibold ${orderStatusBadge(order.status)}`}>
-                        {order.status}
-                      </span>
-                      <span className="text-lg font-bold text-[#0F172A]">
-                        ₹{order.total_amount}
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-4">
+                    <span className={`inline-flex items-center gap-1 rounded-md px-3 py-1 text-xs font-semibold ${orderStatusBadge(order.status)}`}>
+                      {order.status === "pending" && "🟡"}
+                      {order.status === "confirmed" && "🔵"}
+                      {order.status === "printing" && "🟣"}
+                      {order.status === "shipped" && "🟠"}
+                      {order.status === "delivered" && "🟢"}
+                      {order.status === "cancelled" && "🔴"}
+
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    </span>
+                    <span className="text-lg font-bold text-[#0F172A]">
+                      ₹{order.total_amount}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

@@ -414,13 +414,16 @@ export default function Home() {
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-12" : "h-14"}`}>
-            <Link href="/" className="flex items-center gap-2 group">
-              <img
-                src="/logo-icon.png"
-                alt="Powerlay"
-                className="h-9 md:h-10 w-auto object-contain transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_20px_rgba(239,68,68,0.7)]"
-              />
-              <span className="font-bold text-[#0F172A] text-lg tracking-tight">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="p-2 rounded-xl bg-white/60 backdrop-blur-xl border border-slate-200 shadow-sm transition-all duration-300 group-hover:shadow-[0_8px_25px_rgba(124,58,237,0.25)] group-hover:scale-105">
+                <img
+                  src="/logo-icon.png"
+                  alt="Powerlay"
+                  className="h-6 md:h-7 w-auto object-contain"
+                />
+              </div>
+
+              <span className="font-bold text-xl tracking-tight text-[#0F172A] group-hover:text-[#7C3AED] transition-colors duration-300">
                 POWERLAY
               </span>
             </Link>
@@ -637,9 +640,11 @@ export default function Home() {
       <section className="py-8 overflow-hidden border-t border-[#E2E8F0] bg-slate-100">
         <div className="flex animate-marquee whitespace-nowrap">
           {[
-            "IIT Delhi", "NIT Trichy", "VIT Vellore", "BITS Pilani", "Delhi University",
-            "IIIT Hyderabad", "Anna University", "Manipal Institute", "SRM University",
-            "IIT Delhi", "NIT Trichy", "VIT Vellore", "BITS Pilani", "Delhi University"
+            "Engineering Parts", "Prototypes", "Architecture Models", "Miniatures & Figurines",
+            "Custom Accessories", "Lab Equipment", "Art & Decor", "Functional Parts",
+            "Gaming Props", "Educational Models", "Phone Stands", "Enclosures",
+            "Brackets & Mounts", "Gears & Mechanisms", "Cosplay Items", "Research Tools",
+            "Engineering Parts", "Prototypes", "Architecture Models", "Miniatures & Figurines"
           ].map((college, idx) => (
             <div key={idx} className="inline-flex items-center mx-8">
               <span className="text-[#64748B] font-semibold text-lg">{college}</span>
