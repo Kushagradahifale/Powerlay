@@ -89,6 +89,8 @@ export default function DashboardPage() {
 
   const uploadStatusBadge = (status: string) => {
     switch (status) {
+      case "waiting":
+        return "bg-purple-100 text-purple-800 border border-purple-300";
       case "pending":
         return "bg-yellow-100 text-yellow-800 border border-yellow-300";
       case "quoted":
@@ -235,12 +237,13 @@ export default function DashboardPage() {
 
                   <div className="flex items-center gap-3 flex-wrap">
                     <span className={`inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-semibold ${uploadStatusBadge(upload.status)}`}>
+                      {upload.status === "waiting" && "🟣"}
                       {upload.status === "pending" && "🟡"}
                       {upload.status === "quoted" && "🔵"}
                       {upload.status === "paid" && "🟢"}
                       {upload.status === "rejected" && "🔴"}
 
-                      {upload.status.charAt(0).toUpperCase() + upload.status.slice(1)}
+                      {upload.status === "waiting" ? "Waiting Queue" : upload.status.charAt(0).toUpperCase() + upload.status.slice(1)}
                     </span>
 
                     <span className="text-sm font-bold text-[#0F172A] min-w-20">
@@ -267,6 +270,14 @@ export default function DashboardPage() {
                     )}
 
                   </div>
+
+                  {upload.status === "waiting" && (
+                    <div className="w-full mt-4 bg-purple-50 border border-purple-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <p className="text-purple-800 text-sm font-medium">
+                        Your file is queued due to current printer load.
+                      </p>
+                    </div>
+                  )}
 
                   {upload.status === "rejected" && (
                     <div className="w-full mt-4 bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">

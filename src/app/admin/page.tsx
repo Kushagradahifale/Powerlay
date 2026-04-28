@@ -20,6 +20,7 @@ import {
   Truck,
   Printer,
   RefreshCw,
+  ListOrdered,
 } from "lucide-react";
 
 interface Upload {
@@ -27,6 +28,7 @@ interface Upload {
   user_id: string;
   file_name: string;
   file_url: string;
+  file_path?: string | null;
   material: string;
   quantity: number;
   infill_percent: number;
@@ -211,6 +213,23 @@ export default function AdminPage() {
     setActionLoading(null);
   };
 
+  const handleMoveToPending = async (id: string) => {
+    setActionLoading(id);
+
+    const { error } = await supabase
+      .from("uploads")
+      .update({ status: "pending" })
+      .eq("id", id);
+
+    if (error) {
+      alert("Failed to move to pending: " + error.message);
+    } else {
+      await fetchUploads();
+    }
+
+    setActionLoading(null);
+  };
+
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     setOrderStatusLoading(orderId);
 
@@ -229,8 +248,28 @@ export default function AdminPage() {
     setOrderStatusLoading(null);
   };
 
+  const handleDownloadSTL = async (filePath?: string | null) => {
+    if (!filePath) {
+      alert("Missing storage path for this upload.");
+      return;
+    }
+
+    const { data, error } = await supabase.storage
+      .from("stl-files")
+      .createSignedUrl(filePath, 60);
+
+    if (error || !data?.signedUrl) {
+      alert("Failed to generate download link: " + (error?.message || "Unknown error"));
+      return;
+    }
+
+    window.open(data.signedUrl, "_blank");
+  };
+
   const statusBadge = (status: string) => {
     switch (status) {
+      case "waiting":
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "quoted":
@@ -246,6 +285,7 @@ export default function AdminPage() {
 
   const totalUploads = uploads.length;
   const pendingCount = uploads.filter((u) => u.status === "pending").length;
+  const waitingCount = uploads.filter((u) => u.status === "waiting").length;
   const quotedCount = uploads.filter((u) => u.status === "quoted").length;
   const rejectedCount = uploads.filter((u) => u.status === "rejected").length;
 
@@ -394,7 +434,7 @@ export default function AdminPage() {
         </div>
 
         {/* STATS ROW */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-12">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
             <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800" />
             <div className="flex justify-between items-start mb-2">
@@ -404,6 +444,17 @@ export default function AdminPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-[#0F172A]">{totalUploads}</p>
+          </div>
+
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+            <div className="absolute top-0 left-0 w-1.5 h-full bg-purple-500" />
+            <div className="flex justify-between items-start mb-2">
+              <p className="text-slate-500 text-sm font-medium">Waiting</p>
+              <div className="p-2 rounded-xl bg-purple-50 text-purple-600">
+                <ListOrdered className="w-5 h-5" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-[#0F172A]">{waitingCount}</p>
           </div>
 
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
@@ -608,15 +659,13 @@ export default function AdminPage() {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-6 border-t border-slate-100">
 
                       {/* Download Link */}
-                      <a
-                        href={upload.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => handleDownloadSTL(upload.file_path)}
                         className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition-colors border border-slate-200"
                       >
                         <Download className="w-4 h-4" />
                         Download STL
-                      </a>
+                      </button>
 
                       {/* Actions (only for pending) */}
                       {upload.status === "pending" && (
@@ -652,6 +701,23 @@ export default function AdminPage() {
                             className="w-full sm:w-auto inline-flex items-center justify-center bg-white border-2 border-red-200 hover:border-red-500 hover:bg-red-50 text-red-600 px-6 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                           >
                             {actionLoading === upload.id ? "Working..." : "Reject"}
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Actions (for waiting queue) */}
+                      {upload.status === "waiting" && (
+                        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                          <button
+                            onClick={() => handleMoveToPending(upload.id)}
+                            disabled={actionLoading === upload.id || totalActiveWorkload >= DAILY_LIMIT}
+                            className="w-full sm:w-auto inline-flex items-center justify-center bg-purple-100 hover:bg-purple-200 text-purple-700 px-6 py-2.5 rounded-xl text-sm font-bold disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
+                          >
+                            {totalActiveWorkload >= DAILY_LIMIT 
+                              ? "Capacity Full" 
+                              : actionLoading === upload.id 
+                                ? "Moving..." 
+                                : "Move to Pending"}
                           </button>
                         </div>
                       )}

@@ -99,7 +99,7 @@ export default function UploadPage() {
       const activeU = uploadsRes.data?.length || 0;
       setActiveCount(activeO + activeU);
     };
-    
+
     checkCapacity();
     const interval = setInterval(checkCapacity, 5000);
 
@@ -115,10 +115,7 @@ export default function UploadPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isFullCapacity) {
-      toast.error("We are fully booked today. Please try again later or contact us on WhatsApp.");
-      return;
-    }
+    // Removed block for isFullCapacity so user can still upload to queue
 
     if (quantity > 5) {
       toast.error("Maximum quantity is 5 per order for now.");
@@ -152,6 +149,7 @@ export default function UploadPage() {
         .upload(filePath, file);
 
       if (uploadError) {
+        console.error("Storage upload error:", uploadError);
         throw uploadError;
       }
 
@@ -161,26 +159,30 @@ export default function UploadPage() {
       } = supabase.storage.from("stl-files").getPublicUrl(filePath);
 
       // Insert record into uploads table
+      const uploadStatus = isFullCapacity ? "waiting" : "pending";
       const { error: insertError } = await supabase.from("uploads").insert({
         user_id: user.id,
         file_name: file.name,
         file_url,
+        file_path: filePath,
         file_size_mb: (file.size / 1048576).toFixed(2),
         material,
         color,
         quantity,
         infill_percent: infill,
         notes,
-        status: "pending",
+        status: uploadStatus,
       });
 
       if (insertError) {
         throw insertError;
       }
 
-      toast.success(
-        "File submitted! We will review and send you a quote within 24 hours."
-      );
+      if (isFullCapacity) {
+        toast.success("Added to queue. We’ll review it when a slot opens.");
+      } else {
+        toast.success("File submitted. We’ll send your quote within 24 hours.");
+      }
 
       setTimeout(() => {
         router.push("/dashboard");
@@ -289,10 +291,10 @@ export default function UploadPage() {
               <ShieldAlert className="w-8 h-8 text-red-500 shrink-0" />
               <div className="text-left">
                 <h3 className="text-red-800 font-bold text-lg mb-1">
-                  ⚠️ We are fully booked today.
+                  ⚠️ Printer capacity is full.
                 </h3>
                 <p className="text-red-600 font-medium">
-                  Please try again tomorrow. Our printers are currently at maximum capacity.
+                  Your file will be added to the waiting queue. We'll review it as soon as a slot opens.
                 </p>
               </div>
             </div>
@@ -601,7 +603,7 @@ export default function UploadPage() {
 
               <button
                 type="submit"
-                disabled={uploading || isFullCapacity}
+                disabled={uploading}
                 className="w-full relative group overflow-hidden rounded-2xl p-[1px] disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-violet-600 to-blue-600 rounded-2xl opacity-100 group-hover:opacity-90 transition-opacity" />
