@@ -17,7 +17,8 @@ import {
   ChevronRight,
   AlertTriangle,
   User,
-  ExternalLink
+  ExternalLink,
+  Instagram
 } from "lucide-react";
 
 interface Upload {
@@ -247,7 +248,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <h3 className="font-extrabold text-[#0F172A] text-lg">Complete your profile</h3>
-                <p className="text-slate-500 text-sm font-medium">Add your phone number and address for faster delivery and order coordination.</p>
+                <p className="text-slate-500 text-sm font-medium">Complete your profile so we can contact you and deliver smoothly.</p>
               </div>
             </div>
             <Link href="/profile" className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md relative z-10 group">
@@ -429,6 +430,12 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       )}
+
+                      <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+                        <Link href={`/orders/${order.id}`} className="text-sm font-bold text-violet-600 hover:text-violet-700 flex items-center gap-1.5 group transition-colors">
+                          View Full Details <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -479,12 +486,14 @@ export default function DashboardPage() {
               <div className="space-y-4 text-sm text-slate-300 font-medium">
                 <p>We operate with limited daily print slots to maintain exceptional quality for every customer.</p>
                 <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                  <p className="text-white font-bold mb-2 text-xs uppercase tracking-widest text-slate-400">Production Flow:</p>
+                  <p className="text-white font-bold mb-2 text-xs uppercase tracking-widest text-slate-400">Step-by-Step Guide:</p>
                   <ul className="space-y-2">
-                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Queue & Preparation</li>
-                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Active Printing</li>
-                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Quality Check</li>
-                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Shipping & Delivery</li>
+                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Upload STL File</li>
+                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Receive Manual Quote</li>
+                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Complete Payment</li>
+                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Production & Printing</li>
+                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Quality Assurance</li>
+                    <li className="flex items-center gap-2"><ChevronRight className="w-4 h-4 text-violet-400"/> Doorstep Delivery</li>
                   </ul>
                 </div>
               </div>
@@ -493,16 +502,19 @@ export default function DashboardPage() {
             {/* SUPPORT CARD */}
             <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200 p-6 shadow-sm">
               <h2 className="text-lg font-bold text-[#0F172A] mb-2 flex items-center gap-2">
-                Need Help?
+                Need help with your print?
               </h2>
               <p className="text-sm text-slate-500 mb-6 font-medium">Have questions about your STL file, quote, or order progress?</p>
               
               <div className="space-y-3">
-                <button onClick={() => window.open('https://wa.me/917972740201', '_blank')} className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-3 rounded-xl font-bold transition-colors shadow-sm">
+                <button onClick={() => window.open('https://wa.me/918462831438', '_blank')} className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-3 rounded-xl font-bold transition-all shadow-sm hover:-translate-y-0.5">
                   <MessageCircle className="w-5 h-5" /> WhatsApp Support
                 </button>
-                <button onClick={() => window.open('mailto:support@powerlay.com')} className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold transition-colors shadow-sm">
+                <button onClick={() => window.open('mailto:Powerlayofficial@gmail.com')} className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold transition-all shadow-sm hover:-translate-y-0.5">
                   <Mail className="w-5 h-5" /> Email Support
+                </button>
+                <button onClick={() => window.open('https://www.instagram.com/powerlay2025', '_blank')} className="w-full flex items-center justify-center gap-2 bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white py-3 rounded-xl font-bold transition-all shadow-sm hover:-translate-y-0.5">
+                  <Instagram className="w-5 h-5" /> Follow on Instagram
                 </button>
               </div>
             </div>

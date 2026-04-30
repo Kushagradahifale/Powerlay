@@ -17,7 +17,8 @@ import {
   LayoutDashboard,
   ListOrdered,
   Upload,
-  ArrowLeft
+  ArrowLeft,
+  Info
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -142,6 +143,9 @@ export default function ProfilePage() {
           </Link>
           <h1 className="text-3xl md:text-4xl font-extrabold text-[#0F172A] mb-2 tracking-tight">Your Profile</h1>
           <p className="text-slate-500 text-lg">Manage your personal information and delivery details.</p>
+          <div className="mt-4 inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl text-sm font-bold border border-blue-100">
+            <Info className="w-4 h-4" /> Used only for order coordination and delivery.
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

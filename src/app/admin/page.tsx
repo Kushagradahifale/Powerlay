@@ -117,6 +117,8 @@ export default function AdminPage() {
   const [adminNotes, setAdminNotes] = useState<Record<string, string>>({});
   const [priorities, setPriorities] = useState<Record<string, string>>({});
   const [printTimes, setPrintTimes] = useState<Record<string, string>>({});
+  const [trackingNumbers, setTrackingNumbers] = useState<Record<string, string>>({});
+  const [trackingLoading, setTrackingLoading] = useState<string | null>(null);
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -300,6 +302,30 @@ export default function AdminPage() {
     }
 
     setOrderStatusLoading(null);
+  };
+
+  const handleSaveTracking = async (orderId: string) => {
+    const tracking = trackingNumbers[orderId];
+    if (tracking === undefined) {
+      alert("No changes to save.");
+      return;
+    }
+
+    try {
+      setTrackingLoading(orderId);
+      const { error } = await supabase
+        .from("orders")
+        .update({ tracking_number: tracking })
+        .eq("id", orderId);
+
+      if (error) throw error;
+      alert("Tracking number updated successfully!");
+      await fetchOrders();
+    } catch (error: any) {
+      alert("Failed to update tracking: " + error.message);
+    } finally {
+      setTrackingLoading(null);
+    }
   };
 
   const handleDownloadSTL = async (filePath?: string | null) => {
@@ -1121,6 +1147,11 @@ export default function AdminPage() {
                                 <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${orderStatusBadgeClass(order.status)}`}>
                                   {orderStatusEmoji(order.status)} {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                 </span>
+                                {order.status === 'shipped' && !order.tracking_number && (
+                                  <span className="bg-amber-100 text-amber-800 text-[10px] uppercase font-extrabold px-2 py-1 rounded-md animate-pulse flex items-center gap-1">
+                                    <AlertTriangle className="w-3 h-3" /> Tracking needed
+                                  </span>
+                                )}
                                 <span className="text-2xl font-extrabold text-[#0F172A]">₹{order.total_amount}</span>
                               </div>
                             </div>
@@ -1176,7 +1207,38 @@ export default function AdminPage() {
                               <div><p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Order ID</p><p className="text-[#0F172A] font-bold text-sm break-all">{order.id}</p></div>
                               <div><p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Customer ID</p><p className="text-[#0F172A] font-bold text-sm break-all">{order.user_id.slice(0, 12)}…</p></div>
                               <div><p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Amount</p><p className="text-[#0F172A] font-bold">₹{order.total_amount}</p></div>
-                              <div><p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide">Tracking</p><p className="text-[#0F172A] font-bold text-sm">{order.tracking_number || "—"}</p></div>
+                              <div>
+                                <p className="text-slate-500 text-xs font-semibold mb-1 uppercase tracking-wide flex items-center gap-1">
+                                  Tracking {order.tracking_number && <button onClick={() => { copyToClipboard(order.tracking_number!); alert("Tracking copied!"); }} className="text-slate-400 hover:text-blue-600"><Copy className="w-3 h-3" /></button>}
+                                </p>
+                                <p className="text-[#0F172A] font-bold text-sm truncate">{order.tracking_number || "—"}</p>
+                              </div>
+                            </div>
+
+                            {/* Tracking Management */}
+                            <div className="bg-blue-50/30 border border-blue-100 rounded-2xl p-5 mb-6">
+                              <div className="flex items-center gap-2 mb-3">
+                                <Truck className="w-4 h-4 text-blue-600" />
+                                <p className="text-xs font-bold text-blue-900 uppercase tracking-widest">Tracking Management</p>
+                              </div>
+                              <div className="flex flex-col sm:flex-row items-center gap-3">
+                                <div className="relative flex-1 w-full">
+                                  <input
+                                    type="text"
+                                    placeholder="Enter tracking number"
+                                    defaultValue={order.tracking_number || ""}
+                                    onChange={(e) => setTrackingNumbers({ ...trackingNumbers, [order.id]: e.target.value })}
+                                    className="w-full bg-white border border-blue-200 text-sm rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-400 font-medium text-[#0F172A]"
+                                  />
+                                </div>
+                                <button
+                                  onClick={() => handleSaveTracking(order.id)}
+                                  disabled={trackingLoading === order.id}
+                                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-2 min-w-[140px]"
+                                >
+                                  {trackingLoading === order.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Save Tracking"}
+                                </button>
+                              </div>
                             </div>
 
                             {/* Priority & Internal Controls */}
@@ -1248,6 +1310,11 @@ export default function AdminPage() {
                                 <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${orderStatusBadgeClass(order.status)}`}>
                                   {orderStatusEmoji(order.status)} {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                 </span>
+                                {order.status === 'shipped' && !order.tracking_number && (
+                                  <span className="bg-amber-100 text-amber-800 text-[10px] uppercase font-extrabold px-2 py-1 rounded-md animate-pulse flex items-center gap-1">
+                                    <AlertTriangle className="w-3 h-3" /> Tracking needed
+                                  </span>
+                                )}
                                 <span className="text-xl font-extrabold text-[#0F172A]">₹{order.total_amount}</span>
                               </div>
                             </div>
@@ -1255,6 +1322,33 @@ export default function AdminPage() {
                             <div className="flex flex-col md:flex-row gap-4 bg-slate-100/50 rounded-xl p-3 mb-4">
                               <p className="text-sm text-slate-700"><strong>Customer:</strong> {userProfile?.full_name || "Unknown"} ({userProfile?.email || "N/A"})</p>
                               {userProfile?.phone && <p className="text-sm text-slate-700"><strong>Phone:</strong> {userProfile.phone}</p>}
+                            </div>
+
+                            {/* Tracking Management for Completed */}
+                            <div className="bg-blue-50/20 border border-blue-100 rounded-xl p-4 mb-4">
+                              <div className="flex flex-col sm:flex-row items-center gap-3">
+                                <div className="relative flex-1 w-full">
+                                  <input
+                                    type="text"
+                                    placeholder="Tracking number"
+                                    defaultValue={order.tracking_number || ""}
+                                    onChange={(e) => setTrackingNumbers({ ...trackingNumbers, [order.id]: e.target.value })}
+                                    className="w-full bg-white border border-blue-100 text-xs rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400 font-medium text-[#0F172A]"
+                                  />
+                                </div>
+                                <button
+                                  onClick={() => handleSaveTracking(order.id)}
+                                  disabled={trackingLoading === order.id}
+                                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all min-w-[100px]"
+                                >
+                                  {trackingLoading === order.id ? <RefreshCw className="w-3 h-3 animate-spin" /> : "Save"}
+                                </button>
+                                {order.tracking_number && (
+                                  <button onClick={() => { copyToClipboard(order.tracking_number!); alert("Tracking copied!"); }} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors">
+                                    <Copy className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-slate-100">

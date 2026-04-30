@@ -14,7 +14,8 @@ import {
   Upload,
   ListOrdered,
   Search,
-  User
+  User,
+  ChevronRight
 } from "lucide-react";
 
 const STEP_ORDER = ["confirmed", "queued", "printing", "quality_check", "shipped", "delivered"] as const;
@@ -310,6 +311,14 @@ export default function OrdersPage() {
 
                   {/* Progress Stepper */}
                   <ProgressStepper currentStatus={order.status} />
+
+                  <div className="mt-6 flex justify-end">
+                    <Link href={`/orders/${order.id}`}>
+                      <button className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl transition-all shadow-md text-sm group">
+                        View Details <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               );
             })}

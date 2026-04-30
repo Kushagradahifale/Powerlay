@@ -476,8 +476,8 @@ export default function UploadPage() {
                   </p>
                   <p className="text-xs text-violet-700 leading-relaxed">
                     {material === "PLA"
-                      ? "Best for prototypes, college projects, models, and decorative parts. Cost-effective with a smooth finish."
-                      : "Best for functional parts, stronger prints, and heat-resistant use. Offers superior durability compared to PLA."}
+                      ? "Best for college projects, decorative items, models, and prototypes. Offers a smooth finish."
+                      : "Best for functional parts, stronger prints, and heat-resistant components. Offers superior durability."}
                   </p>
                 </div>
               </div>
@@ -595,6 +595,41 @@ export default function UploadPage() {
           {/* RIGHT: ESTIMATE & SUBMIT */}
           <div className="lg:sticky lg:top-28 space-y-6">
             
+            {/* Before You Upload Guidance */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.52 }}
+              className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 -translate-y-12 translate-x-12 rounded-full blur-2xl opacity-50" />
+              <h3 className="text-sm font-bold text-[#0F172A] flex items-center gap-2 mb-4 relative z-10">
+                <Info className="w-4 h-4 text-blue-500" /> Before You Upload
+              </h3>
+              <ul className="space-y-3 relative z-10">
+                <li className="flex items-start gap-2 text-[11px] text-slate-600 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                  <span>Only STL files are supported for 3D printing.</span>
+                </li>
+                <li className="flex items-start gap-2 text-[11px] text-slate-600 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                  <span>Max quantity is 5 per upload for quality control.</span>
+                </li>
+                <li className="flex items-start gap-2 text-[11px] text-slate-600 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                  <span>Every quote is manually reviewed for accuracy.</span>
+                </li>
+                <li className="flex items-start gap-2 text-[11px] text-slate-600 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                  <span>Final price depends on weight, complexity, and time.</span>
+                </li>
+                <li className="flex items-start gap-2 text-[11px] text-slate-600 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                  <span>Urgent requests depend on printer availability.</span>
+                </li>
+              </ul>
+            </motion.div>
+
             {/* Customer Info Reminder */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
