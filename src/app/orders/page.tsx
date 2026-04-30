@@ -13,7 +13,8 @@ import {
   LayoutDashboard,
   Upload,
   ListOrdered,
-  Search
+  Search,
+  User
 } from "lucide-react";
 
 const STEP_ORDER = ["confirmed", "queued", "printing", "quality_check", "shipped", "delivered"] as const;
@@ -207,6 +208,9 @@ export default function OrdersPage() {
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
               <LayoutDashboard className="w-4 h-4" /> Dashboard
+            </Link>
+            <Link href="/profile" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
+              <User className="w-4 h-4" /> Profile
             </Link>
             <Link href="/upload" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1.5">
               <Upload className="w-4 h-4" /> Upload

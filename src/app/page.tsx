@@ -518,6 +518,7 @@ export default function Home() {
                       </div>
                       {[
                         ...(userRole === "admin" ? [{ label: '🛡️ Admin Panel', href: '/admin' }] : []),
+                        { label: '👤 Profile', href: '/profile' },
                         { label: '📊 Dashboard', href: '/dashboard' },
                         { label: '📦 Orders', href: '/orders' },
                         { label: '⬆️ Upload', href: '/upload' },

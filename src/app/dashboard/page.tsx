@@ -15,7 +15,9 @@ import {
   Info,
   ShieldAlert,
   ChevronRight,
-  AlertTriangle
+  AlertTriangle,
+  User,
+  ExternalLink
 } from "lucide-react";
 
 interface Upload {
@@ -36,6 +38,15 @@ interface Order {
   created_at: string;
 }
 
+interface Profile {
+  full_name: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  pincode: string | null;
+}
+
 const ORDER_STEPS = ["confirmed", "queued", "printing", "quality_check", "shipped", "delivered"];
 
 export default function DashboardPage() {
@@ -43,6 +54,7 @@ export default function DashboardPage() {
   const [userEmail, setUserEmail] = useState<string>("");
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,6 +88,14 @@ export default function DashboardPage() {
           .order("created_at", { ascending: false });
 
         setOrders(orders ?? []);
+
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        
+        setProfile(profileData);
       };
 
       await fetchData();
@@ -95,6 +115,8 @@ export default function DashboardPage() {
     await supabase.auth.signOut();
     router.push("/login");
   };
+
+  const isProfileIncomplete = !profile?.phone || !profile?.address || !profile?.pincode;
 
   const totalUploads = uploads.length;
   const pendingCount = uploads.filter((u) => u.status === "pending").length;
@@ -182,6 +204,7 @@ export default function DashboardPage() {
             <Link href="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Home</Link>
             <Link href="/dashboard" className="text-sm font-medium text-blue-600 font-bold transition-colors">Dashboard</Link>
             <Link href="/orders" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Orders</Link>
+            <Link href="/profile" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Profile</Link>
             <Link href="/upload" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Upload</Link>
           </div>
 
@@ -197,7 +220,7 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <div className="relative z-10 pt-32 px-6 max-w-6xl mx-auto space-y-10">
+      <div className="relative z-10 pt-32 px-6 max-w-6xl mx-auto space-y-8">
         
         {/* Header & Upload CTA */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -213,6 +236,25 @@ export default function DashboardPage() {
             <UploadCloud className="w-5 h-5" /> Upload New STL
           </Link>
         </div>
+
+        {/* Profile Completion Warning */}
+        {isProfileIncomplete && (
+          <div className="bg-white border-2 border-amber-200 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-full bg-amber-50/50 -skew-x-12 translate-x-16" />
+            <div className="flex items-center gap-5 relative z-10">
+              <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-7 h-7 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-[#0F172A] text-lg">Complete your profile</h3>
+                <p className="text-slate-500 text-sm font-medium">Add your phone number and address for faster delivery and order coordination.</p>
+              </div>
+            </div>
+            <Link href="/profile" className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-[#0F172A] hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md relative z-10 group">
+              Complete Profile <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        )}
 
         {/* OVERVIEW CARDS */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
@@ -335,7 +377,7 @@ export default function DashboardPage() {
                     <Package className="w-8 h-8 text-slate-400" />
                   </div>
                   <h3 className="text-xl font-bold text-[#0F172A] mb-2">No orders yet</h3>
-                  <p className="text-slate-500 max-w-sm mx-auto">Orders will appear here automatically after you complete a payment.</p>
+                  <p className="text-slate-500 max-sm mx-auto">Orders will appear here automatically after you complete a payment.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -395,6 +437,39 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-6">
+            {/* QUICK PROFILE CARD */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200 p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-bold text-[#0F172A] flex items-center gap-2">
+                  <User className="w-5 h-5 text-violet-500" /> My Profile
+                </h2>
+                <Link href="/profile" className="text-xs font-bold text-violet-600 hover:underline flex items-center gap-1">
+                  Edit <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${profile?.phone ? 'bg-green-50 text-green-600' : 'bg-slate-50 text-slate-400'}`}>
+                    <CheckCircle2 className={`w-4 h-4 ${profile?.phone ? 'opacity-100' : 'opacity-20'}`} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone</p>
+                    <p className="text-sm font-bold text-[#0F172A]">{profile?.phone || "Not added"}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${profile?.address ? 'bg-green-50 text-green-600' : 'bg-slate-50 text-slate-400'}`}>
+                    <CheckCircle2 className={`w-4 h-4 ${profile?.address ? 'opacity-100' : 'opacity-20'}`} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Address</p>
+                    <p className="text-sm font-bold text-[#0F172A] line-clamp-1">{profile?.address || "Not added"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* DELIVERY EXPECTATION CARD */}
             <div className="bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
               <div className="absolute top-[-50%] right-[-10%] w-64 h-64 bg-violet-500/20 rounded-full blur-[60px] pointer-events-none" />
