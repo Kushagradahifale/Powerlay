@@ -13,9 +13,10 @@ import {
   LayoutDashboard,
   Upload,
   ListOrdered,
+  Search
 } from "lucide-react";
 
-const STEP_ORDER = ["confirmed", "printing", "shipped", "delivered"] as const;
+const STEP_ORDER = ["confirmed", "queued", "printing", "quality_check", "shipped", "delivered"] as const;
 
 const STEP_META: Record<
   string,
@@ -27,17 +28,29 @@ const STEP_META: Record<
     color: "text-blue-600",
     bg: "bg-blue-100",
   },
+  queued: {
+    label: "Queued",
+    icon: Clock,
+    color: "text-orange-600",
+    bg: "bg-orange-100",
+  },
   printing: {
     label: "Printing",
     icon: Printer,
     color: "text-violet-600",
     bg: "bg-violet-100",
   },
+  quality_check: {
+    label: "Quality Check",
+    icon: Search,
+    color: "text-cyan-600",
+    bg: "bg-cyan-100",
+  },
   shipped: {
     label: "Shipped",
     icon: Truck,
-    color: "text-orange-600",
-    bg: "bg-orange-100",
+    color: "text-indigo-600",
+    bg: "bg-indigo-100",
   },
   delivered: {
     label: "Delivered",
@@ -49,50 +62,39 @@ const STEP_META: Record<
 
 function statusEmoji(status: string) {
   switch (status) {
-    case "pending":
-      return "🟡";
-    case "confirmed":
-      return "🔵";
-    case "printing":
-      return "🟣";
-    case "shipped":
-      return "🟠";
-    case "delivered":
-      return "🟢";
-    case "cancelled":
-      return "🔴";
-    default:
-      return "⚪";
+    case "pending": return "🟡";
+    case "confirmed": return "🔵";
+    case "queued": return "⏳";
+    case "printing": return "🟣";
+    case "quality_check": return "🔍";
+    case "shipped": return "🟠";
+    case "delivered": return "🟢";
+    case "cancelled": return "🔴";
+    default: return "⚪";
   }
 }
 
 function statusBadgeClass(status: string) {
   switch (status) {
-    case "pending":
-      return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    case "confirmed":
-      return "bg-blue-100 text-blue-800 border-blue-200";
-    case "printing":
-      return "bg-violet-100 text-violet-800 border-violet-200";
-    case "shipped":
-      return "bg-orange-100 text-orange-800 border-orange-200";
-    case "delivered":
-      return "bg-emerald-100 text-emerald-800 border-emerald-200";
-    case "cancelled":
-      return "bg-red-100 text-red-800 border-red-200";
-    default:
-      return "bg-slate-100 text-slate-800 border-slate-200";
+    case "pending": return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case "confirmed": return "bg-blue-100 text-blue-800 border-blue-200";
+    case "queued": return "bg-orange-100 text-orange-800 border-orange-200";
+    case "printing": return "bg-violet-100 text-violet-800 border-violet-200";
+    case "quality_check": return "bg-cyan-100 text-cyan-800 border-cyan-200";
+    case "shipped": return "bg-indigo-100 text-indigo-800 border-indigo-200";
+    case "delivered": return "bg-emerald-100 text-emerald-800 border-emerald-200";
+    case "cancelled": return "bg-red-100 text-red-800 border-red-200";
+    default: return "bg-slate-100 text-slate-800 border-slate-200";
   }
 }
 
 function ProgressStepper({ currentStatus }: { currentStatus: string }) {
   const currentIdx = STEP_ORDER.indexOf(currentStatus as any);
-  // Don't render stepper for pending or cancelled
   if (currentStatus === "pending" || currentStatus === "cancelled") return null;
 
   return (
-    <div className="mt-6 pt-5 border-t border-slate-100">
-      <div className="flex items-center justify-between gap-1">
+    <div className="mt-6 pt-5 border-t border-slate-100 overflow-x-auto pb-4">
+      <div className="flex items-center justify-between gap-1 min-w-[600px]">
         {STEP_ORDER.map((step, i) => {
           const meta = STEP_META[step];
           const Icon = meta.icon;
@@ -101,8 +103,7 @@ function ProgressStepper({ currentStatus }: { currentStatus: string }) {
 
           return (
             <div key={step} className="flex items-center flex-1 last:flex-none">
-              {/* Step circle */}
-              <div className="flex flex-col items-center gap-1.5 min-w-[60px]">
+              <div className="flex flex-col items-center gap-2 min-w-[70px]">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isCompleted
                     ? isCurrent
@@ -114,18 +115,17 @@ function ProgressStepper({ currentStatus }: { currentStatus: string }) {
                   <Icon className="w-5 h-5" />
                 </div>
                 <span
-                  className={`text-[11px] font-semibold text-center leading-tight ${isCompleted ? "text-[#0F172A]" : "text-slate-400"
+                  className={`text-[11px] font-bold text-center leading-tight ${isCompleted ? "text-[#0F172A]" : "text-slate-400"
                     }`}
                 >
                   {meta.label}
                 </span>
               </div>
 
-              {/* Connector line */}
               {i < STEP_ORDER.length - 1 && (
-                <div className="flex-1 mx-1 mt-[-18px]">
+                <div className="flex-1 mx-1 mt-[-24px]">
                   <div
-                    className={`h-1 rounded-full transition-all duration-500 ${i < currentIdx
+                    className={`h-1.5 rounded-full transition-all duration-500 ${i < currentIdx
                       ? "bg-gradient-to-r from-violet-500 to-blue-500"
                       : "bg-slate-200"
                       }`}
@@ -213,7 +213,7 @@ export default function OrdersPage() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-100 text-slate-900 text-sm font-semibold px-4 py-2 rounded-xl">
+          <div className="flex items-center gap-2 bg-slate-100 text-slate-900 text-sm font-bold px-4 py-2 rounded-xl">
             <ListOrdered className="w-4 h-4" />
             <span className="hidden sm:inline">Orders</span>
           </div>
