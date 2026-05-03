@@ -445,6 +445,7 @@ export default function Home() {
   return (
     <div className={`w-full ${inter.className}`}>
 
+
       {/* Navbar */}
       <nav
         className={`sticky top-4 z-50 mx-4 rounded-2xl transition-all duration-500 ${scrolled
@@ -763,25 +764,116 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing Calculator */}
-      <div id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <ScrollFadeIn>
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
-              <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Pricing</span>
+      {/* How It Works */}
+      <section id="how-it-works" className="bg-slate-50 py-20 relative overflow-hidden">
+        <div className="absolute top-20 left-0 w-80 h-80 bg-blue-100/20 rounded-full filter blur-3xl" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <ScrollFadeIn>
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
+                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Process</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">How It Works</h2>
+              <p className="text-[#64748B] text-lg leading-relaxed">Four simple steps from design to delivery</p>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Quick Price Estimate</h2>
+          </ScrollFadeIn>
+
+          <div className="space-y-12">
+            {[
+              {
+                stage: 1,
+                title: 'Upload Your STL File',
+                desc: 'Simply drag and drop your 3D model file. We support STL format with detailed preview and file analysis.',
+                details: ['Instant file validation', 'Automatic size calculation', 'Material recommendations'],
+                img: 'Upload your Stl.png',
+                color: '#7C3AED',
+              },
+              {
+                stage: 2,
+                title: 'Get Your Quote in 24 Hours',
+                desc: 'Our team analyzes your file and provides a detailed quote based on material, complexity, and specifications.',
+                details: ['Transparent pricing breakdown', 'Multiple material options', 'Custom specifications support'],
+                img: 'Get quote in 24 hrs.png',
+                color: '#60a5fa',
+              },
+              {
+                stage: 3,
+                title: 'Secure Payment via Razorpay',
+                desc: 'Pay safely through Razorpay with multiple payment options including UPI, cards, netbanking, and wallets.',
+                details: ['256-bit encryption', 'Multiple payment methods', 'Instant payment confirmation'],
+                img: 'Secure Payment via Razorpay.png',
+                color: '#34d399',
+              },
+              {
+                stage: 4,
+                title: 'Receive Your Print at your doorstep',
+                desc: 'We print, quality check, and ship your order. Track your delivery anywhere in India with real-time updates.',
+                details: ['100% quality checked', 'Secure packaging', 'Pan-India delivery'],
+                img: 'Recieve your Print at your Doorstep.png',
+                color: '#a78bfa',
+              },
+            ].map((step, idx) => (
+              <ScrollFadeIn key={step.stage} delay={idx * 0.1}>
+                <div className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-center`}>
+                  {/* Image */}
+                  <div className="lg:w-1/2">
+                    <div className="relative h-80 group overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                      <img
+                        src={step.img}
+                        alt={step.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-6 left-6 w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg"
+                        style={{ background: `linear-gradient(135deg, ${step.color}, ${step.color}dd)` }}>
+                        {step.stage}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="lg:w-1/2 space-y-4">
+                    <div className="inline-block px-4 py-2 rounded-full text-sm font-bold"
+                      style={{ background: `${step.color}20`, color: step.color }}>
+                      STAGE {step.stage}
+                    </div>
+                    <h3 className="text-3xl font-bold" style={{ color: '#0F172A' }}>
+                      {step.title}
+                    </h3>
+                    <p className="text-[#64748B] text-lg leading-relaxed">
+                      {step.desc}
+                    </p>
+                    <ul className="space-y-2">
+                      {step.details.map((detail, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="w-5 h-5 mt-0.5 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style={{ background: step.color }}>✓</span>
+                          <span className="text-[#1E293B]">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </ScrollFadeIn>
+            ))}
           </div>
-        </ScrollFadeIn>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-lg mx-auto rounded-3xl p-8 glass-card card-shadow"
-        >
-          <PricingCalculator />
-        </motion.div>
-      </div>
+        </div>
+      </section>
+
+      {/* What Can You Print - Tabbed */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollFadeIn>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
+                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Categories</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">What Can You Print?</h2>
+              <p className="text-[#64748B] text-lg leading-relaxed">From prototypes to decorative items, we print almost anything</p>
+            </div>
+          </ScrollFadeIn>
+
+          <CategoryTabs />
+        </div>
+      </section>
 
       {/* Gallery */}
       <section className="py-20 bg-white relative overflow-hidden">
@@ -824,52 +916,208 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Grid */}
-      <section className="bg-slate-50 py-16 relative overflow-hidden">
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-100/20 rounded-full filter blur-3xl" />
+      {/* Quality Promise */}
+      <section className="bg-slate-50 py-20 relative overflow-hidden">
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-green-100/20 rounded-full filter blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <ScrollFadeIn>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { icon: "🖨️", title: "2+", description: "Printers Running", color: "#7C3AED" },
-                { icon: "✅", title: "10+", description: "Projects Completed", color: "#2563EB" },
-                { icon: "🚚", title: "2-3 Day", description: "Delivery", color: "#059669" },
-                { icon: "🧪", title: "PLA & PETG", description: "Materials", color: "#a78bfa" },
-              ].map((stat, index) => (
-                <ScrollFadeIn key={stat.description} delay={index * 0.1}>
-                  <motion.div
-                    whileHover={{ y: -6 }}
-                    transition={{ duration: 0.25 }}
-                    className="h-full text-center p-6 bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl"
-                      style={{ background: `${stat.color}15` }}>
-                      {stat.icon}
-                    </div>
-                    <h3 className="text-2xl font-bold mb-1 text-[#0F172A]">{stat.title}</h3>
-                    <p className="text-sm text-[#64748B]">{stat.description}</p>
-                  </motion.div>
-                </ScrollFadeIn>
-              ))}
+            <div className="text-center mb-14">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200 mb-4">
+                <span className="text-xs font-semibold text-green-700 uppercase tracking-wider">Our Promise</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">
+                Quality Promise
+              </h2>
+              <p className="text-[#64748B] text-lg leading-relaxed max-w-2xl mx-auto">
+                Every order goes through a rigorous multi-step quality pipeline before reaching you.
+              </p>
             </div>
           </ScrollFadeIn>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: '🔍',
+                title: 'Manual STL Review',
+                desc: 'Every uploaded file is personally reviewed for printability, wall thickness, and structural integrity.',
+                color: '#7C3AED',
+              },
+              {
+                icon: '🧪',
+                title: 'Material Guidance',
+                desc: 'We recommend the best material (PLA vs PETG) based on your part\'s function and requirements.',
+                color: '#2563EB',
+              },
+              {
+                icon: '✅',
+                title: 'Quality Check Before Dispatch',
+                desc: 'Every finished print is inspected for layer adhesion, dimensional accuracy, and surface quality.',
+                color: '#059669',
+              },
+              {
+                icon: '🔐',
+                title: 'Secure File Handling',
+                desc: 'Your design files are stored securely and never shared. Your IP stays completely yours.',
+                color: '#DC2626',
+              },
+            ].map((item, idx) => (
+              <ScrollFadeIn key={idx} delay={idx * 0.1}>
+                <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }}>
+                  <div className="h-full p-7 bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5"
+                      style={{ background: `${item.color}15` }}
+                    >
+                      {item.icon}
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0F172A] mb-2">{item.title}</h3>
+                    <p className="text-[#64748B] text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </motion.div>
+              </ScrollFadeIn>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* What Can You Print - Tabbed */}
-      <section className="bg-white py-20">
+      {/* Pricing Calculator */}
+      <div id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <ScrollFadeIn>
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
+              <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Pricing</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Quick Price Estimate</h2>
+          </div>
+        </ScrollFadeIn>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-lg mx-auto rounded-3xl p-8 glass-card card-shadow"
+        >
+          <PricingCalculator />
+        </motion.div>
+      </div>
+
+      {/* Materials */}
+      <section id="materials" className="bg-white py-20" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollFadeIn>
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
-                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Categories</span>
+                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Materials</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">What Can You Print?</h2>
-              <p className="text-[#64748B] text-lg leading-relaxed">From prototypes to decorative items, we print almost anything</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Choose Your Material</h2>
+            </div>
+          </ScrollFadeIn>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <ScrollFadeIn>
+              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
+                <div className="text-white p-8" style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
+                  <h3 className="text-3xl font-bold mb-2">PLA Standard </h3>
+                  <div className="text-4xl font-bold mb-1">From ₹5.99<span className="text-lg">/gram</span></div>
+                  <p className="text-purple-200">Perfect for prototypes & decorative items</p>
+                </div>
+                <div className="p-8">
+                  <ul className="space-y-4 mb-8">
+                    {['High detail and smooth finish', 'Wide color selection available', 'Eco-friendly biodegradable material', 'Ideal for home & office decor', 'Cost-effective option'].map((f, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="text-lg">✅</span>
+                        <span className="text-[#1E293B] text-lg">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
+                    Order PLA Print
+                  </Link>
+                </div>
+              </Card>
+            </ScrollFadeIn>
+            <ScrollFadeIn delay={0.1}>
+              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
+                <div className="p-8 relative" style={{ background: 'linear-gradient(135deg, #7C3AED, #A78BFA)' }}>
+                  <div className="absolute top-4 right-4 text-[#7C3AED] bg-white px-3 py-1 rounded-full text-sm font-bold">POPULAR</div>
+                  <h3 className="text-3xl font-bold mb-2 text-white">PETG Engineering Grade </h3>
+                  <div className="text-4xl font-bold mb-1 text-white">From ₹7.99<span className="text-lg">/gram</span></div>
+                  <p className="text-purple-200">Professional-grade engineering parts</p>
+                </div>
+                <div className="p-8">
+                  <ul className="space-y-4 mb-8">
+                    {['Superior strength & durability', 'Temperature & impact resistant', 'Perfect for functional parts', 'Used in professional applications', 'Longer lifespan than PLA'].map((f, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="text-lg">✅</span>
+                        <span className="text-[#1E293B] text-lg">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
+                    Order PETG Print
+                  </Link>
+                </div>
+              </Card>
+            </ScrollFadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Limited Slots? */}
+      <section className="bg-white py-20 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-violet-100/20 rounded-full filter blur-3xl pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <ScrollFadeIn>
+            <div className="text-center mb-14">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 mb-4">
+                <span className="text-xs font-semibold text-amber-700 uppercase tracking-wider">Capacity Info</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">
+                Why Limited Slots?
+              </h2>
+              <p className="text-[#64748B] text-lg leading-relaxed max-w-2xl mx-auto">
+                We intentionally limit daily print slots so every order gets the attention it deserves.
+              </p>
             </div>
           </ScrollFadeIn>
 
-          <CategoryTabs />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: '🎯',
+                title: 'Quality-First Approach',
+                desc: 'Each print is closely monitored. Limited capacity means zero compromises on precision and finish.',
+              },
+              {
+                icon: '⏱️',
+                title: 'Reduces Rushed Prints',
+                desc: 'By capping orders, we avoid overloading printers — eliminating failed or low-quality prints.',
+              },
+              {
+                icon: '🔒',
+                title: 'Dedicated Attention',
+                desc: 'Your file gets manual review and optimized slicer settings instead of assembly-line treatment.',
+              },
+              {
+                icon: '📋',
+                title: 'Fair Waiting Queue',
+                desc: 'When capacity is full, customers enter a transparent waiting queue. No rush, no chaos.',
+              },
+            ].map((item, idx) => (
+              <ScrollFadeIn key={idx} delay={idx * 0.1}>
+                <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }}>
+                  <div className="h-full p-7 bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5"
+                      style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)' }}
+                    >
+                      {item.icon}
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0F172A] mb-2">{item.title}</h3>
+                    <p className="text-[#64748B] text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </motion.div>
+              </ScrollFadeIn>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -969,258 +1217,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works - Enhanced */}
-      <section id="how-it-works" className="bg-slate-50 py-20 relative overflow-hidden">
-        <div className="absolute top-20 left-0 w-80 h-80 bg-blue-100/20 rounded-full filter blur-3xl" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      {/* FAQ */}
+      <section id="faq" className="bg-white py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollFadeIn>
-            <div className="text-center mb-16">
+            <div className="text-center mb-14">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
-                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Process</span>
+                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">FAQ</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">How It Works</h2>
-              <p className="text-[#64748B] text-lg leading-relaxed">Four simple steps from design to delivery</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">Frequently Asked Questions</h2>
+              <p className="text-[#64748B] text-lg leading-relaxed">Everything you need to know about our 3D printing service</p>
             </div>
           </ScrollFadeIn>
 
-          <div className="space-y-12">
-            {[
-              {
-                stage: 1,
-                title: 'Upload Your STL File',
-                desc: 'Simply drag and drop your 3D model file. We support STL format with detailed preview and file analysis.',
-                details: ['Instant file validation', 'Automatic size calculation', 'Material recommendations'],
-                img: 'Upload your Stl.png',
-                color: '#7C3AED',
-              },
-              {
-                stage: 2,
-                title: 'Get Your Quote in 24 Hours',
-                desc: 'Our team analyzes your file and provides a detailed quote based on material, complexity, and specifications.',
-                details: ['Transparent pricing breakdown', 'Multiple material options', 'Custom specifications support'],
-                img: 'Get quote in 24 hrs.png',
-                color: '#60a5fa',
-              },
-              {
-                stage: 3,
-                title: 'Secure Payment via Razorpay',
-                desc: 'Pay safely through Razorpay with multiple payment options including UPI, cards, netbanking, and wallets.',
-                details: ['256-bit encryption', 'Multiple payment methods', 'Instant payment confirmation'],
-                img: 'Secure Payment via Razorpay.png',
-                color: '#34d399',
-              },
-              {
-                stage: 4,
-                title: 'Receive Your Print at your doorstep',
-                desc: 'We print, quality check, and ship your order. Track your delivery anywhere in India with real-time updates.',
-                details: ['100% quality checked', 'Secure packaging', 'Pan-India delivery'],
-                img: 'Recieve your Print at your Doorstep.png',
-                color: '#a78bfa',
-              },
-            ].map((step, idx) => (
-              <ScrollFadeIn key={step.stage} delay={idx * 0.1}>
-                <div className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-center`}>
-                  {/* Image */}
-                  <div className="lg:w-1/2">
-                    <div className="relative h-80 group overflow-hidden bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                      <img
-                        src={step.img}
-                        alt={step.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-6 left-6 w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg"
-                        style={{ background: `linear-gradient(135deg, ${step.color}, ${step.color}dd)` }}>
-                        {step.stage}
-                      </div>
+          <div className="space-y-4">
+            {faqs.map((faq, index) => {
+              const isOpen = openFaq === index;
+
+              return (
+                <div key={faq.question} className={`bg-white border transition-all duration-300 rounded-2xl overflow-hidden ${isOpen ? 'border-[#7C3AED] shadow-md' : 'border-[#E2E8F0] shadow-sm hover:border-purple-200 hover:shadow-md'}`}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors duration-200"
+                  >
+                    <span className="text-lg font-semibold text-[#0F172A]">
+                      {faq.question}
+                    </span>
+
+                    <motion.span
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="text-2xl font-bold shrink-0 text-[#7C3AED] flex items-center justify-center w-8 h-8 rounded-full bg-purple-50"
+                    >
+                      {isOpen ? "−" : "+"}
+                    </motion.span>
+                  </button>
+
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: isOpen ? "auto" : 0,
+                      opacity: isOpen ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-6 pb-6 text-[#64748B] leading-relaxed">
+                      {faq.answer}
                     </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="lg:w-1/2 space-y-4">
-                    <div className="inline-block px-4 py-2 rounded-full text-sm font-bold"
-                      style={{ background: `${step.color}20`, color: step.color }}>
-                      STAGE {step.stage}
-                    </div>
-                    <h3 className="text-3xl font-bold" style={{ color: '#0F172A' }}>
-                      {step.title}
-                    </h3>
-                    <p className="text-[#64748B] text-lg leading-relaxed">
-                      {step.desc}
-                    </p>
-                    <ul className="space-y-2">
-                      {step.details.map((detail, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span className="w-5 h-5 mt-0.5 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style={{ background: step.color }}>✓</span>
-                          <span className="text-[#1E293B]">{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  </motion.div>
                 </div>
-              </ScrollFadeIn>
-            ))}
-          </div>
-
-          {/* FAQ Section */}
-          <section id="faq" className="bg-white py-20">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <ScrollFadeIn>
-                <div className="text-center mb-14">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
-                    <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">FAQ</span>
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-3">Frequently Asked Questions</h2>
-                  <p className="text-[#64748B] text-lg leading-relaxed">Everything you need to know about our 3D printing service</p>
-                </div>
-              </ScrollFadeIn>
-
-              <div className="space-y-4">
-                {faqs.map((faq, index) => {
-                  const isOpen = openFaq === index;
-
-                  return (
-                    <div key={faq.question} className={`bg-white border transition-all duration-300 rounded-2xl overflow-hidden ${isOpen ? 'border-[#7C3AED] shadow-md' : 'border-[#E2E8F0] shadow-sm hover:border-purple-200 hover:shadow-md'}`}>
-                      <button
-                        type="button"
-                        onClick={() => setOpenFaq(isOpen ? null : index)}
-                        className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors duration-200"
-                      >
-                        <span className="text-lg font-semibold text-[#0F172A]">
-                          {faq.question}
-                        </span>
-
-                        <motion.span
-                          animate={{ rotate: isOpen ? 180 : 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="text-2xl font-bold shrink-0 text-[#7C3AED] flex items-center justify-center w-8 h-8 rounded-full bg-purple-50"
-                        >
-                          {isOpen ? "−" : "+"}
-                        </motion.span>
-                      </button>
-
-                      <motion.div
-                        initial={false}
-                        animate={{
-                          height: isOpen ? "auto" : 0,
-                          opacity: isOpen ? 1 : 0,
-                        }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-6 pb-6 text-[#64748B] leading-relaxed">
-                          {faq.answer}
-                        </div>
-                      </motion.div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          {/* CTA */}
-          <ScrollFadeIn>
-            <div className="text-center mt-16">
-              <Link
-                href="/upload"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300"
-              >
-                Start Your Order Now →
-              </Link>
-            </div>
-          </ScrollFadeIn>
-        </div>
-      </section>
-
-      {/* Materials */}
-      <section id="materials" className="bg-white py-20" >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollFadeIn>
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
-                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Materials</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Choose Your Material</h2>
-            </div>
-          </ScrollFadeIn>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <ScrollFadeIn>
-              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
-                <div className="text-white p-8" style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
-                  <h3 className="text-3xl font-bold mb-2">PLA Standard </h3>
-                  <div className="text-4xl font-bold mb-1">From ₹5.99<span className="text-lg">/gram</span></div>
-                  <p className="text-purple-200">Perfect for prototypes & decorative items</p>
-                </div>
-                <div className="p-8">
-                  <ul className="space-y-4 mb-8">
-                    {['High detail and smooth finish', 'Wide color selection available', 'Eco-friendly biodegradable material', 'Ideal for home & office decor', 'Cost-effective option'].map((f, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="text-lg">✅</span>
-                        <span className="text-[#1E293B] text-lg">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
-                    Order PLA Print
-                  </Link>
-                </div>
-              </Card>
-            </ScrollFadeIn>
-            <ScrollFadeIn delay={0.1}>
-              <Card className="overflow-hidden h-full bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style={{ borderColor: '#7C3AED' }}>
-                <div className="p-8 relative" style={{ background: 'linear-gradient(135deg, #7C3AED, #A78BFA)' }}>
-                  <div className="absolute top-4 right-4 text-[#7C3AED] bg-white px-3 py-1 rounded-full text-sm font-bold">POPULAR</div>
-                  <h3 className="text-3xl font-bold mb-2 text-white">PETG Engineering Grade </h3>
-                  <div className="text-4xl font-bold mb-1 text-white">From ₹7.99<span className="text-lg">/gram</span></div>
-                  <p className="text-purple-200">Professional-grade engineering parts</p>
-                </div>
-                <div className="p-8">
-                  <ul className="space-y-4 mb-8">
-                    {['Superior strength & durability', 'Temperature & impact resistant', 'Perfect for functional parts', 'Used in professional applications', 'Longer lifespan than PLA'].map((f, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="text-lg">✅</span>
-                        <span className="text-[#1E293B] text-lg">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/upload" className="inline-flex items-center justify-center w-full py-4 text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-[#7C3AED] to-[#2563EB] shadow-[0_10px_30px_rgba(124,58,237,0.4)] hover:shadow-[0_15px_40px_rgba(124,58,237,0.6)] hover:-translate-y-1 transition-all duration-300">
-                    Order PETG Print
-                  </Link>
-                </div>
-              </Card>
-            </ScrollFadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="bg-slate-50 py-20 relative overflow-hidden" >
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-100/15 rounded-full filter blur-3xl" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <ScrollFadeIn>
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-100 mb-4">
-                <span className="text-xs font-semibold text-[#7C3AED] uppercase tracking-wider">Why Us</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] tracking-tight">Why Choose Powerlay?</h2>
-            </div>
-          </ScrollFadeIn>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {[
-              { emoji: '⚡', title: 'Fast Delivery', description: 'Get your 3D prints in just 2-3 business days. We prioritize speed without compromising quality.' },
-              { emoji: '🛡️', title: 'Quality Guaranteed', description: 'Every print is 100% quality checked before Estimated Shipping. We stand behind our work.' },
-              { emoji: '💳', title: 'Secure Payment', description: 'Pay securely through Razorpay. Multiple options including cards, UPI, and wallets.' },
-            ].map((item, idx) => (
-              <ScrollFadeIn key={idx} delay={idx * 0.1}>
-                <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.25 }}>
-                  <Card className="text-center h-full p-8 bg-white border border-[#E2E8F0] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <div className="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center text-3xl" style={{ background: 'linear-gradient(135deg, #F3E8FF, #EDE9FE)' }}>{item.emoji}</div>
-                    <h3 className="text-xl font-bold mb-3 text-[#0F172A]">{item.title}</h3>
-                    <p className="text-[#64748B] text-base leading-relaxed">{item.description}</p>
-                  </Card>
-                </motion.div>
-              </ScrollFadeIn>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1346,6 +1395,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
 
     </div >
   );
